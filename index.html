@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>人生工具箱 | 窗口图谱 · 伴侣 · 累计 · 风险 · 租买</title>
+<meta name="description" content="人生工具箱：窗口图谱、伴侣选择、财富累计、贷款风险、买租对比，一处切换。" />
+<link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<header class="bar">
+  <div class="wrap bar-in">
+    <div class="brand"><span class="mark">LEDGER</span><strong>人生工具箱</strong><em id="curTabName">窗口图谱</em></div>
+    <nav class="tabs" role="tablist" aria-label="工具切换">
+      <button class="tab active" role="tab" aria-selected="true" aria-controls="view-windows" id="tab-windows" data-tab="windows" type="button">人生窗口图谱</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-partner" id="tab-partner" data-tab="partner" type="button">伴侣选择器</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-wealth" id="tab-wealth" data-tab="wealth" type="button">财富累计计算器</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-loan" id="tab-loan" data-tab="loan" type="button">贷款买房/车风险器</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-rentbuy" id="tab-rentbuy" data-tab="rentbuy" type="button">买租房计算器</button>
+    </nav>
+    <button id="btnShare" class="share" type="button">分享</button>
+  </div>
+  <!-- 只有窗口图谱 tab 才显示的控件 -->
+  <div class="wrap sub-bar" id="windowsControls">
+    <div class="age-ctl">
+      <label for="ageRange"><strong id="ageLabel">30</strong>岁</label>
+      <input id="ageRange" type="range" min="0" max="90" step="1" value="30" />
+        <input id="ageNumber" type="text" inputmode="numeric" value="30" aria-label="直接输入年龄" />
+    </div>
+    <div class="gender" role="group" aria-label="性别">
+      <button id="btnFemale" class="g active" type="button">女性</button>
+      <button id="btnMale" class="g" type="button">男性</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap wide">
+  <!-- Tab 1: 人生窗口图谱（现有功能，原样保留） -->
+  <section id="view-windows" role="tabpanel" aria-labelledby="tab-windows">
+    <p class="lede">拖年龄，全场重算。点卡片看完整依据与补救。<span id="curLine"></span></p>
+    <div id="summary" class="stats" aria-live="polite"></div>
+
+    <div class="toolbar">
+      <div class="t-group" id="statusFilter" role="group" aria-label="按余量筛选">
+        <button data-s="all" class="t active" type="button">全部</button>
+        <button data-s="open" class="t" type="button">进行中</button>
+        <button data-s="narrowing" class="t" type="button">余量不多</button>
+        <button data-s="missed" class="t" type="button">已过·补救</button>
+        <button data-s="upcoming" class="t" type="button">待开启</button>
+      </div>
+      <div class="t-group">
+        <select id="domainFilter" aria-label="按领域筛选">
+          <option value="all">全部领域</option>
+          <option>生理健康</option>
+          <option>生育家庭</option>
+          <option>认知教育</option>
+          <option>职业财富</option>
+          <option>关系社交</option>
+          <option>迁移身份</option>
+        </select>
+        <select id="sortSel" aria-label="排序">
+          <option value="start">按区间起点</option>
+          <option value="urgent">按余量排序</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="grid" class="grid"></div>
+
+    <footer class="foot"><details><summary>口径说明（点开）</summary>
+      <p>约束三档：<b>政策硬约束</b>（明确年龄线，以官方最新公告为准）、<b>医学强证据</b>（指南/共识）、<b>统计趋势</b>（人群数据，不代表个人命运）。信息整理，非医疗法律建议。</p>
+    </details></footer>
+  </section>
+
+  <!-- Tab 2: 伴侣选择器（单页筛选：滑杆+选项，结果=最佳伴侣画像+错过重遇概率） -->
+  <section id="view-partner" role="tabpanel" aria-labelledby="tab-partner" hidden>
+    <p class="lede">条件每加一条，人群缩小一圈。拖完看还剩多少人、错过要等多久。<span id="partnerSub"></span></p>
+    <div class="pwrap">
+      <form id="partnerForm" class="calc calc-2" autocomplete="off">
+      <div class="stack">
+      <div class="panel">
+        <h2>对方标准 <button id="partnerReset" class="linkbtn" type="button">重置</button></h2>
+        <div class="prow"><label>我在找</label><div class="chips" id="pGender">
+          <button class="chip active" data-v="female" type="button">女生</button><button class="chip" data-v="male" type="button">男生</button>
+        </div></div>
+        <div class="prow"><label>对象年龄 <b id="vAgeRange">24–32</b> 岁</label>
+          <div class="dual">
+            <div><input id="pAgeMin" type="range" min="18" max="50" step="1" value="24" /><small>最小</small></div>
+            <div><input id="pAgeMax" type="range" min="18" max="50" step="1" value="32" /><small>最大</small></div>
+          </div>
+        </div>
+        <div class="prow"><label>身高至少 <b id="vHeight">160</b> cm</label><input id="pHeight" type="range" min="150" max="190" step="1" value="160" /></div>
+        <div class="prow"><label>颜值至少 <b id="vLooks">6</b> 分 <small>1–10分</small></label><input id="pLooks" type="range" min="1" max="10" step="1" value="6" /></div>
+        <div class="prow"><label>学历</label><div class="radios" role="radiogroup" aria-label="学历要求">
+          <label class="radio"><input type="radio" name="edu" value="any" checked /><span>不限</span></label><label class="radio"><input type="radio" name="edu" value="low" /><span>大专以下</span></label><label class="radio"><input type="radio" name="edu" value="dz" /><span>大专+</span></label><label class="radio"><input type="radio" name="edu" value="bk" /><span>本科+</span></label><label class="radio"><input type="radio" name="edu" value="ms" /><span>硕士+</span></label>
+        </div></div>
+        <div class="prow"><label>年收入</label><div class="radios" role="radiogroup" aria-label="年收入要求">
+          <label class="radio"><input type="radio" name="income" value="any" checked /><span>不限</span></label><label class="radio"><input type="radio" name="income" value="10" /><span>10万+</span></label><label class="radio"><input type="radio" name="income" value="18" /><span>18万+</span></label><label class="radio"><input type="radio" name="income" value="50" /><span>50万+</span></label><label class="radio"><input type="radio" name="income" value="100" /><span>100万+</span></label>
+        </div></div>
+        <div class="prow"><label>对方资产 <small>净资产口径</small></label><div class="radios" role="radiogroup" aria-label="对方资产要求">
+          <label class="radio"><input type="radio" name="asset" value="any" checked /><span>不限</span></label><label class="radio"><input type="radio" name="asset" value="50" /><span>50万+</span></label><label class="radio"><input type="radio" name="asset" value="200" /><span>200万+</span></label><label class="radio"><input type="radio" name="asset" value="500" /><span>500万+</span></label>
+        </div></div>
+        <div class="prow"><label>城市 <small>输入名字即筛</small></label>
+          <div class="citywrap"><input id="pCityInput" type="text" autocomplete="off" placeholder="如：苏州" aria-label="输入城市名筛选" /><div id="pCityList" class="suggest" hidden></div></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>相遇</h2>
+        <div class="prow"><label>社交量 <b id="vSocial">5</b> 人/月 <small>每月认识的新单身异性</small></label><input id="pSocial" type="range" min="1" max="30" step="1" value="5" /></div>
+      </div>
+      </div>
+      <div class="panel dark sticky">
+        <h2 class="res-title">结果</h2>
+        <div class="kpis kpis-2">
+          <div class="kpi"><small>同城候选约</small><b id="qPool">–</b></div>
+          <div class="kpi"><small>占比</small><b id="qRatio">–</b></div>
+          <div class="kpi"><small>1年内再遇同级</small><b id="qProb">–</b></div>
+          <div class="kpi"><small>3年内再遇同级</small><b id="qProb3">–</b></div>
+        </div>
+        <div class="stage"><span id="missBadge" class="badge">–</span><span id="portrait"></span></div>
+        <div id="waitLine" class="slegend"></div>
+        <details id="howCalc" class="how" open><summary>怎么算出来的</summary><div id="howRows"></div></details>
+        <ul id="partnerAdvice" class="advice"></ul>
+      </div>
+      </form>
+    </div>
+    <footer class="foot"><details><summary>口径说明（点开）</summary>
+      <p>费米估算非普查：先选城市，取该城市18–50岁单身基数（由常住人口×0.175折算：18–50岁占比约50% × 单身率约35%，候选里标了每个数），取一半为目标性别，再 × 年龄均匀占比 × 身高正态占比 × 颜值正态占比（1–10分，均值6±1.5）× 学历×收入×资产占比（线级系数修正）。学历基线：大专+45%/本科+25%/硕士+6%（大专以下取剩余）；收入基线：10万+40%/18万+22%/50万+4%/100万+0.8%；资产基线：50万+25%/200万+8%/500万+2%。身高按男均173±6cm、女均160±5.5cm正态估算。概率按泊松：1年再遇=1-e^(-λ)，λ=月社交×12×占比。条件是筛子不是尺子，仅做取舍提示。</p>
+    </details></footer>
+  </section>
+
+  <!-- Tab 3: 财富累计（定投 + 复利 + 通胀，看未来曲线） -->
+  <section id="view-wealth" role="tabpanel" aria-labelledby="tab-wealth" hidden>
+    <p class="lede">这是数学，不是鸡汤。调 3 个参数，看 30 年后差多少钱。<span id="wealthSub"></span></p>
+    <div class="calc">
+      <form id="wealthForm" class="panel" autocomplete="off">
+        <h2>输入假设</h2>
+        <div class="frow"><label for="wAgeNow">当前年龄</label><div class="fin"><input id="wAgeNow" type="text" inputmode="numeric" value="30" /><span>岁</span></div></div>
+        <div class="frow"><label for="wAgeEnd">目标年龄</label><div class="fin"><input id="wAgeEnd" type="text" inputmode="numeric" value="60" /><span>岁</span></div></div>
+        <div class="frow"><label for="wInit">初始本金</label><div class="fin"><input id="wInit" type="text" inputmode="decimal" value="10" /><span>万</span></div></div>
+        <div class="frow"><label for="wMonthly">每月定投</label><div class="fin"><input id="wMonthly" type="text" inputmode="decimal" value="3000" /><span>元</span></div></div>
+        <div class="frow"><label for="wGrowth">定投年增幅 <small>跟涨薪走</small></label><div class="fin"><input id="wGrowth" type="text" inputmode="decimal" value="0" /><span>%</span></div></div>
+        <div class="frow"><label for="wReturn">年化收益</label><div class="fin"><input id="wReturn" type="text" inputmode="decimal" value="2.5" /><span>%</span></div></div>
+        <div class="frow"><label for="wInflation">通胀</label><div class="fin"><input id="wInflation" type="text" inputmode="decimal" value="3" /><span>%</span></div></div>
+        <div class="frow presets"><span>快捷：</span><button class="t" type="button" data-ret="4">稳健4%</button><button class="t" type="button" data-ret="7">进取7%</button><button class="t" type="button" data-ret="10">激进10%</button></div>
+        <div class="frow btns"><button id="wealthReset" class="t" type="button">重置</button><a class="t primary" href="#/partner">← 回伴侣选择器</a></div>
+      </form>
+      <div class="panel dark">
+        <div class="kpis">
+          <div class="kpi"><small>名义终值</small><b id="wFinal">–</b></div>
+          <div class="kpi"><small>实际购买力</small><b id="wReal">–</b></div>
+          <div class="kpi"><small>累计投入</small><b id="wContrib">–</b></div>
+          <div class="kpi"><small>收益</small><b id="wGain">–</b></div>
+        </div>
+        <div id="wealthChartWrap" class="chart"></div>
+        <div id="wealthMiles" class="miles"></div>
+        <ul id="wealthAdvice" class="advice"></ul>
+        <details id="wealthTableWrap" class="wtable"><summary>逐年明细（每5年）</summary><div id="wealthTable"></div></details>
+      </div>
+    </div>
+    <footer class="foot"><details><summary>口径说明（点开）</summary>
+      <p>按月复利：月利率=(1+年化)^(1/12)-1，每月定投按年增幅逐年上调。实际购买力=名义/(1+通胀)^年数。未扣税费，未考虑收入中断。收益假设仅做演示，高收益=高波动，激进10%长期很难持续。</p>
+    </details></footer>
+  </section>
+
+  <!-- Tab 4: 贷款买房/车风险器（月供占比 + 断供缓冲 + 利率压力测试） -->
+  <section id="view-loan" role="tabpanel" aria-labelledby="tab-loan" hidden>
+    <p class="lede">月供能不能扛，看两个数：占收入几成、断供能撑几月。<span id="loanSub"></span></p>
+    <div class="calc">
+      <form id="loanForm" class="panel" autocomplete="off">
+        <h2>输入假设 <button id="loanExample" class="linkbtn" type="button">填示例</button></h2>
+        <div class="prow"><label>贷款用途</label><div class="chips" id="loanMode">
+          <button class="chip active" data-v="house" type="button">买房</button><button class="chip" data-v="car" type="button">买车</button>
+        </div></div>
+        <div class="prow"><label>还款方式</label><div class="chips" id="loanType">
+          <button class="chip active" data-v="annuity" type="button">等额本息</button><button class="chip" data-v="principal" type="button">等额本金</button>
+        </div></div>
+        <div class="prow"><label>贷款金额 <b id="vLoan">100</b> 万</label><input id="fLoan" type="range" min="20" max="500" step="5" value="100" /></div>
+        <div class="prow"><label>年利率 <b id="vRate">3.3</b> %</label><input id="fRate" type="range" min="1" max="8" step="0.1" value="3.3" /></div>
+        <div class="prow"><label>贷款年限</label><div class="chips" id="loanYears"></div></div>
+        <div class="prow"><label>税后月收入 <b id="vIncome">1.2</b> 万</label><input id="fIncome" type="range" min="0" max="100" step="1" value="40" /></div>
+        <div class="prow"><label>其他月支出 <b id="vExpense">0.8</b> 万</label><input id="fExpense" type="range" min="0" max="5" step="0.1" value="0.8" /></div>
+        <div class="prow"><label>存款资金 <b id="vDeposit">10</b> 万</label><input id="fDeposit" type="range" min="0" max="200" step="1" value="10" /></div>
+        <div class="prow"><label>工作稳定性</label><div class="chips" id="loanJob">
+          <button class="chip" data-v="stable" type="button">稳定</button><button class="chip active" data-v="normal" type="button">一般</button><button class="chip" data-v="volatile" type="button">波动大</button>
+        </div></div>
+        <div class="frow btns"><button id="loanReset" class="t" type="button">重置</button><a class="t primary" href="#/rentbuy">买还是租？去算算 →</a></div>
+      </form>
+      <div class="panel dark">
+        <div class="verdict"><small>断供概率约</small><div class="probs"><div><b id="lProb">–</b><span>1年</span></div><div><b id="lProb5">–</b><span>5年</span></div><div><b id="lProb10">–</b><span>10年</span></div></div><p id="lVerdict"></p></div>
+        <div class="kpis">
+          <div class="kpi"><small>月供</small><b id="lPay">–</b></div>
+          <div class="kpi"><small>月供占比</small><b id="lRatio">–</b></div>
+          <div class="kpi"><small>断供缓冲</small><b id="lBuffer">–</b></div>
+          <div class="kpi"><small>总利息</small><b id="lInterest">–</b></div>
+        </div>
+        <div class="stage"><span id="riskBadge" class="badge">–</span><span id="riskDesc"></span></div>
+        <div id="loanStress" class="miles"></div>
+        <ul id="loanAdvice" class="advice"></ul>
+      </div>
+    </div>
+    <footer class="foot"><details><summary>口径说明（点开）</summary>
+      <p>等额本息月供=P·r·(1+r)^n/((1+r)^n−1)，等额本金首月=P/n+P·r（占比与缓冲按首月算，最保守）。月供占比=月供/税后月收入（30%内稳健、50%为红线）；断供缓冲=存款资金/(月供+其他月支出)（6个月及格、3个月危险）。断供概率=慢性压力（占比&gt;50%:25%、&gt;35%:10%、否则2%，无收入按15%）+急性冲击（年内收入中断3个月概率：稳定4%/一般8%/波动大15%，乘以缓冲缺口比例，缓冲充足仍保留25%暴露），5年/10年按年概率复利累加（1-(1-p)^n），为示意估算非精算。利率压力测试按同方式重算。未含税费、维修、贬值。非信贷建议。</p>
+    </details></footer>
+  </section>
+
+  <!-- Tab 5: 买租房计算器（同起点逐月迭代，比n年后净财富，算打平年限） -->
+  <section id="view-rentbuy" role="tabpanel" aria-labelledby="tab-rentbuy" hidden>
+    <p class="lede">同一起点：都有首付+税费。买了每月还贷持有，租了把省下的钱拿去理财，看n年后谁剩得多。<span id="rbSub"></span></p>
+    <div class="calc">
+      <form id="rentbuyForm" class="panel" autocomplete="off">
+        <h2>输入假设 <button id="rbReset" class="linkbtn" type="button">重置</button></h2>
+        <div class="prow"><label>贷款金额 <b id="vLoanAmt">210</b> 万</label><input id="rLoanAmt" type="range" min="0" max="700" step="10" value="210" /></div>
+        <div class="prow"><label>首付金额 <b id="vDownPay">90</b> 万</label><input id="rDownPay" type="range" min="0" max="500" step="5" value="90" /></div>
+        <div class="prow"><label>房贷年利率 <b id="vRateR">3.3</b> %</label><input id="rRate" type="range" min="1" max="8" step="0.1" value="3.3" /></div>
+        <div class="prow"><label>贷款年限</label><div class="chips" id="buyYears">
+          <button class="chip" data-v="10" type="button">10年</button><button class="chip" data-v="20" type="button">20年</button><button class="chip active" data-v="30" type="button">30年</button>
+        </div></div>
+        <div class="prow"><label>同地段月租金 <b id="vRent">4000</b> 元</label><input id="rRent" type="range" min="1000" max="20000" step="100" value="4000" /></div>
+        <div class="prow"><label>租金年涨幅 <b id="vRentG">3</b> %</label><input id="rRentG" type="range" min="0" max="10" step="0.5" value="3" /></div>
+        <div class="prow"><label>房价年涨幅 <b id="vHomeG">2</b> %</label><input id="rHomeG" type="range" min="-2" max="10" step="0.5" value="2" /></div>
+        <div class="prow"><label>住几年 <b id="vHold">10</b> 年</label><input id="rHold" type="range" min="1" max="30" step="1" value="10" /></div>
+        <div class="prow"><label>机会成本年化 <b id="vOpp">3</b> % <small>首付不买房拿去理财</small></label><input id="rOpp" type="range" min="1" max="8" step="0.5" value="3" /></div>
+      </form>
+      <div class="panel dark">
+        <div class="verdict"><small id="rbKicker">持有10年</small><div class="vprob"><b id="rbDiff">–</b></div><p id="rbVerdict"></p></div>
+        <div class="kpis">
+          <div class="kpi"><small>首月月供</small><b id="bPay">–</b></div>
+          <div class="kpi"><small>买方净财富</small><b id="bBuy">–</b></div>
+          <div class="kpi"><small>租方净财富</small><b id="bRent">–</b></div>
+          <div class="kpi"><small>打平年限</small><b id="bEven">–</b></div>
+        </div>
+        <div id="rbChartWrap" class="chart"></div>
+        <ul id="rbAdvice" class="advice"></ul>
+        <details id="rbTableWrap" class="wtable"><summary>几年对比（5 / 10 / 15 / 20 / 30年）</summary><div id="rbTable"></div></details>
+      </div>
+    </div>
+    <footer class="foot"><details><summary>口径说明（点开）</summary>
+      <p>同起点：双方开局都有首付+交易税费（房价×3%一次性；房价=贷款金额+首付金额）。买方每月还月供+持有成本（房价×1%/12），期末拥有房值−剩余贷款；租方首付理财（机会成本复利），每月把（月供+持有−租金）差额继续定投（租金贵过月供时从本金扣）。房价与租金涨幅可调，不确定就按0估。打平年限=买方净财富首次≥租方的年份（看30年）。未含搬家成本与个人偏好。非投资建议。</p>
+    </details></footer>
+  </section>
+</main>
+
+<div id="scrim" class="scrim" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+    <button id="sheetClose" class="x" type="button" aria-label="关闭">×</button>
+    <div id="sheetBody"></div>
+  </div>
+</div>
+
+<script src="./data.js"></script>
+<script src="./app.js"></script>
+<script src="./partner.js"></script>
+<script src="./wealth.js"></script>
+<script src="./loan.js"></script>
+<script src="./rentbuy.js"></script>
+<script src="./tabs.js"></script>
+</body>
+</html>
