@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>人生工具箱 | 窗口图谱 · 伴侣 · 累计 · 风险 · 租买</title>
-<meta name="description" content="人生工具箱：窗口图谱、伴侣选择、财富累计、贷款风险、买租对比，一处切换。" />
+<title>人生工具箱 | 窗口图谱 · 错过还有下一个吗 · 复利要怎么攒 · 月供扛得住吗 · 买还是租更值</title>
+<meta name="description" content="人生工具箱：窗口图谱、伴侣去留、复利攒钱、月供压力、买租哪个值，一处切换。" />
 <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
@@ -13,10 +13,10 @@
     <div class="brand"><span class="mark">LEDGER</span><strong>人生工具箱</strong><em id="curTabName">窗口图谱</em></div>
     <nav class="tabs" role="tablist" aria-label="工具切换">
       <button class="tab active" role="tab" aria-selected="true" aria-controls="view-windows" id="tab-windows" data-tab="windows" type="button">人生窗口图谱</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="view-partner" id="tab-partner" data-tab="partner" type="button">伴侣选择器</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="view-wealth" id="tab-wealth" data-tab="wealth" type="button">财富累计计算器</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="view-loan" id="tab-loan" data-tab="loan" type="button">贷款买房/车风险器</button>
-      <button class="tab" role="tab" aria-selected="false" aria-controls="view-rentbuy" id="tab-rentbuy" data-tab="rentbuy" type="button">买租房计算器</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-partner" id="tab-partner" data-tab="partner" type="button">错过还有下一个吗</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-wealth" id="tab-wealth" data-tab="wealth" type="button">复利要怎么攒</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-loan" id="tab-loan" data-tab="loan" type="button">月供扛得住吗</button>
+      <button class="tab" role="tab" aria-selected="false" aria-controls="view-rentbuy" id="tab-rentbuy" data-tab="rentbuy" type="button">买还是租更值</button>
     </nav>
     <button id="btnShare" class="share" type="button">分享</button>
   </div>
@@ -72,7 +72,7 @@
     </details></footer>
   </section>
 
-  <!-- Tab 2: 伴侣选择器（单页筛选：滑杆+选项，结果=最佳伴侣画像+错过重遇概率） -->
+  <!-- Tab 2: 错过还有下一个吗（单页筛选：滑杆+选项，结果=最佳伴侣画像+错过重遇概率） -->
   <section id="view-partner" role="tabpanel" aria-labelledby="tab-partner" hidden>
     <p class="lede">条件每加一条，人群缩小一圈。拖完看还剩多少人、错过要等多久。<span id="partnerSub"></span></p>
     <div class="pwrap">
@@ -129,7 +129,7 @@
     </details></footer>
   </section>
 
-  <!-- Tab 3: 财富累计（定投 + 复利 + 通胀，看未来曲线） -->
+  <!-- Tab 3: 复利要怎么攒（定投 + 复利 + 通胀，看未来曲线） -->
   <section id="view-wealth" role="tabpanel" aria-labelledby="tab-wealth" hidden>
     <p class="lede">这是数学，不是鸡汤。调 3 个参数，看 30 年后差多少钱。<span id="wealthSub"></span></p>
     <div class="calc">
@@ -143,7 +143,7 @@
         <div class="frow"><label for="wReturn">年化收益</label><div class="fin"><input id="wReturn" type="text" inputmode="decimal" value="2.5" /><span>%</span></div></div>
         <div class="frow"><label for="wInflation">通胀</label><div class="fin"><input id="wInflation" type="text" inputmode="decimal" value="3" /><span>%</span></div></div>
         <div class="frow presets"><span>快捷：</span><button class="t" type="button" data-ret="4">稳健4%</button><button class="t" type="button" data-ret="7">进取7%</button><button class="t" type="button" data-ret="10">激进10%</button></div>
-        <div class="frow btns"><button id="wealthReset" class="t" type="button">重置</button><a class="t primary" href="#/partner">← 回伴侣选择器</a></div>
+        <div class="frow btns"><button id="wealthReset" class="t" type="button">重置</button><a class="t primary" href="#/partner">← 错过还有下一个吗</a></div>
       </form>
       <div class="panel dark">
         <div class="kpis">
@@ -163,7 +163,7 @@
     </details></footer>
   </section>
 
-  <!-- Tab 4: 贷款买房/车风险器（月供占比 + 断供缓冲 + 利率压力测试） -->
+  <!-- Tab 4: 月供扛得住吗（月供占比 + 断供缓冲 + 利率压力测试） -->
   <section id="view-loan" role="tabpanel" aria-labelledby="tab-loan" hidden>
     <p class="lede">月供能不能扛，看两个数：占收入几成、断供能撑几月。<span id="loanSub"></span></p>
     <div class="calc">
@@ -184,7 +184,7 @@
         <div class="prow"><label>工作稳定性</label><div class="chips" id="loanJob">
           <button class="chip" data-v="stable" type="button">稳定</button><button class="chip active" data-v="normal" type="button">一般</button><button class="chip" data-v="volatile" type="button">波动大</button>
         </div></div>
-        <div class="frow btns"><button id="loanReset" class="t" type="button">重置</button><a class="t primary" href="#/rentbuy">买还是租？去算算 →</a></div>
+        <div class="frow btns"><button id="loanReset" class="t" type="button">重置</button><a class="t primary" href="#/rentbuy">买还是租更值？去算算 →</a></div>
       </form>
       <div class="panel dark">
         <div class="verdict"><small>断供概率约</small><div class="probs"><div><b id="lProb">–</b><span>1年</span></div><div><b id="lProb5">–</b><span>5年</span></div><div><b id="lProb10">–</b><span>10年</span></div></div><p id="lVerdict"></p></div>
@@ -204,7 +204,7 @@
     </details></footer>
   </section>
 
-  <!-- Tab 5: 买租房计算器（同起点逐月迭代，比n年后净财富，算打平年限） -->
+  <!-- Tab 5: 买还是租更值（同起点逐月迭代，比n年后净财富，算打平年限） -->
   <section id="view-rentbuy" role="tabpanel" aria-labelledby="tab-rentbuy" hidden>
     <p class="lede">同一起点：都有首付+税费。买了每月还贷持有，租了把省下的钱拿去理财，看n年后谁剩得多。<span id="rbSub"></span></p>
     <div class="calc">
@@ -242,7 +242,7 @@
 </main>
 
 <div id="scrim" class="scrim" hidden>
-  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" aria-label="区间详情">
     <button id="sheetClose" class="x" type="button" aria-label="关闭">×</button>
     <div id="sheetBody"></div>
   </div>

@@ -170,7 +170,7 @@
   sortSel.addEventListener("change", (e) => { state.sort = e.target.value; render(); });
   $("#btnShare").addEventListener("click", async () => {
     const btn = $("#btnShare");
-    const tabNames = { windows: "人生窗口图谱", partner: "伴侣选择器", wealth: "财富累计计算器", loan: "贷款买房/车风险器", rentbuy: "买租房计算器" };
+    const tabNames = { windows: "人生窗口图谱", partner: "错过还有下一个吗", wealth: "复利要怎么攒", loan: "月供扛得住吗", rentbuy: "买还是租更值" };
     let hk = "";
     try { hk = (location.hash || "").replace(/^#\/?/, "").split("?")[0]; } catch (e) {}
     if (hk === "levels" || hk === "fortune") hk = "partner";

@@ -60,7 +60,7 @@
     // 1 应急
     if (emg < 3) advice.push(`应急缺口约 <b>${fmtW(Math.max(0, monthly * 3 - liquid))}</b>：先存够3个月支出（${fmtW(monthly * 3)}），再谈投资。`);
     else if (emg < 6) advice.push(`应急已 ${emg.toFixed(1)} 个月：补到6个月（还差 ${fmtW(monthly * 6 - liquid)}），用货币基金单独存放。`);
-    else advice.push(`应急 ${emg >= 20 ? "20+" : emg.toFixed(1)} 个月已达标：多余活钱可转入定投，去「财富累计」算未来。`);
+    else advice.push(`应急 ${emg >= 20 ? "20+" : emg.toFixed(1)} 个月已达标：多余活钱可转入定投，去「复利要怎么攒」算未来。`);
     // 2 储蓄
     if (p.income > 0 && saveRate < 0.2) advice.push(`储蓄率仅 ${(saveRate * 100).toFixed(0)}%：记账1个月，砍掉最大的一笔可选支出，目标先到20%。`);
     else if (saveRate < 0.4) advice.push(`储蓄率 ${(saveRate * 100).toFixed(0)}% 健康：把涨薪部分的50%自动定投，避免 lifestyle creep。`);
@@ -72,7 +72,7 @@
     if (total > 0 && p.house / total > 0.8 && p.house > 0) advice.push(`房产占总资产 ${((p.house / total) * 100).toFixed(0)}%：流动性偏紧，每月强制留一笔非房产资产。`);
     else if (total > 0 && p.cash / total > 0.6 && total >= 10) advice.push(`现金占比超60%：通胀在吃利息，留足应急后分批转稳健投资。`);
     else if (p.invest === 0 && saveAmt > 0) advice.push(`还没有投资资产：每月拿结余的1/3开小额定投，先养成再求收益。`);
-    if (p.age < 35 && saveAmt > 0) advice.push(`你处在复利最便宜的年纪：早投10年结局差一倍，去「财富累计」亲手算一次。`);
+    if (p.age < 35 && saveAmt > 0) advice.push(`你处在复利最便宜的年纪：早投10年结局差一倍，去「复利要怎么攒」亲手算一次。`);
 
     return { total, net, saveRate, emg, debtRatio, score, bench, stage, desc, advice: advice.slice(0, 4) };
   }

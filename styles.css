@@ -157,7 +157,7 @@ select{background:var(--card);border:1px solid var(--line);border-radius:7px;pad
 .wtable table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
 .wtable th,.wtable td{text-align:right;padding:5px 8px;border-bottom:1px solid #2a3550}
 .wtable th:first-child,.wtable td:first-child{text-align:left}
-/* 伴侣选择器：单页全宽滑杆 + 选项片（解决旧表单输入列过窄问题） */
+/* 错过还有下一个吗：单页全宽滑杆 + 选项片（解决旧表单输入列过窄问题） */
 .pwrap{margin-top:0}
 .calc-2{grid-template-columns:minmax(430px,560px) minmax(0,1fr);align-items:start}
 .stack{display:flex;flex-direction:column;gap:12px;min-width:0}

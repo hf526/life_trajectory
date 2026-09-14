@@ -5,10 +5,10 @@
 (function () {
   const TABS = {
     windows: { view: "view-windows", tab: "tab-windows", name: "窗口图谱" },
-    partner: { view: "view-partner", tab: "tab-partner", name: "伴侣选择" },
-    wealth: { view: "view-wealth", tab: "tab-wealth", name: "财富累计" },
-    loan: { view: "view-loan", tab: "tab-loan", name: "贷款风险" },
-    rentbuy: { view: "view-rentbuy", tab: "tab-rentbuy", name: "买租对比" },
+    partner: { view: "view-partner", tab: "tab-partner", name: "伴侣去留" },
+    wealth: { view: "view-wealth", tab: "tab-wealth", name: "复利攒钱" },
+    loan: { view: "view-loan", tab: "tab-loan", name: "月供压力" },
+    rentbuy: { view: "view-rentbuy", tab: "tab-rentbuy", name: "买租哪个值" },
   };
   const ALIAS = { levels: "partner", fortune: "partner" }; // 旧 Tab2 链接兼容
   const DEFAULT = "windows";

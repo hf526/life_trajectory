@@ -1,4 +1,4 @@
-/* 贷款买房/车风险器 v2：滑杆输入 + 断供概率结论 + 利率压力测试
+/* 月供扛得住吗 v2：滑杆输入 + 断供概率结论 + 利率压力测试
  * 房/车双模式（切换自动换量程与默认值），等额本息/本金两种算法，localStorage 持久化
  */
 (function () {
@@ -221,7 +221,7 @@
       if (!b) return;
       const box = b.closest(".chips");
       box.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c === b));
-      if (box.id === "loanMode") fillPreset(b.dataset.v); // 切换用途自动换量程与默认值
+      if (box.id === "loanMode") { fillPreset(b.dataset.v); render(); } // 切换用途自动换量程与默认值并当场重算
       else render();
     });
     $("loanExample").addEventListener("click", () => { fillPreset(chipVal("loanMode") || "house"); render(); });

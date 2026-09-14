@@ -1,4 +1,4 @@
-/* 伴侣选择器 v1：费米估算
+/* 错过还有下一个吗 v1：费米估算
  * 输入：目标性别 / 我年龄 / 对象年龄段 / 身高 / 颜值 / 学历 / 收入 / 资产 / 城市 / 社交量
  * 输出：最佳伴侣画像 + 同城候选人数 + 错过后1年内重遇概率（大/中/小）+ 最贵条件 + 行动
  * 基数均为量级估算（见 CITIES / EDU_BASE / INC_BASE / ASSET_BASE），可在顶部直接调。
@@ -142,7 +142,7 @@
   const fmtBase = (n) => n >= 10000 ? (n / 10000).toFixed(0) + "万" : String(Math.round(n));
   const pct1 = (x) => (x * 100).toFixed(x < 0.01 ? 2 : 1) + "%";
   const fmtRatio = (r) => r >= 0.01 ? (r * 100).toFixed(1) + "%" : (r * 100).toFixed(2) + "%";
-  const fmtWait = (m) => !Number.isFinite(m) ? "几乎等不到" : m >= 24 ? "约" + (m / 12).toFixed(1) + "年" : m >= 12 ? "约" + (m / 12).toFixed(1) + "年" : "约" + Math.max(1, Math.round(m)) + "个月";
+  const fmtWait = (m) => !Number.isFinite(m) || m > 1200 ? "几乎等不到" : m >= 24 ? "约" + (m / 12).toFixed(1) + "年" : m >= 12 ? "约" + (m / 12).toFixed(1) + "年" : "约" + Math.max(1, Math.round(m)) + "个月";
 
   function render() {
     if (!$("partnerForm")) return;
