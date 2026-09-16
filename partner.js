@@ -200,8 +200,11 @@
     if (top && top.mult >= 1.5) adv.push(`最贵的一条是 <b>${top.name}</b>：放宽它人数约 ×${top.mult >= 10 ? Math.round(top.mult) : top.mult.toFixed(1)}。<button class="linkbtn" data-relax="${top.kind}" type="button">帮我放宽</button>`);
     else adv.push(`当前条件不算苛刻：占比 ${fmtRatio(r.ratio)}，先保社交量再砍条件。`);
     if (Number.isFinite(r.waitMonths) && r.waitMonths > 1) {
-      const halved = r.waitMonths / 2;
-      adv.push(`社交从 ${p.social} 提到 ${Math.min(30, p.social * 2)} 人/月，等待从 ${fmtWait(r.waitMonths)} 缩到 ${fmtWait(halved)}。圈子比标准好改。`);
+      const target = Math.min(30, p.social * 2); // 社交封顶30，等待按实际能涨到的量缩，不能一律说减半
+      if (target > p.social) {
+        const newWait = r.waitMonths * p.social / target;
+        adv.push(`社交从 ${p.social} 提到 ${target} 人/月，等待从 ${fmtWait(r.waitMonths)} 缩到 ${fmtWait(newWait)}。圈子比标准好改。`);
+      }
     }
     if (r.grade === "小") adv.push(`重遇概率小：遇到前 10% 的别用“再看看”放走，错过平均等 ${fmtWait(r.waitMonths)}。`);
     else if (r.grade === "大") adv.push(`重遇概率大：不用怕错过，${fmtWait(r.waitMonths)}内大概率再遇同级，多看人品和相处。`);

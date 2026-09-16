@@ -100,7 +100,7 @@
     const grids = [0.25, 0.5, 0.75, 1].map((f) =>
       `<line x1="${P.l}" y1="${Y(maxY * f)}" x2="${W - P.r}" y2="${Y(maxY * f)}" stroke="#2a3550" stroke-width="1"/><text x="${W - P.r}" y="${Y(maxY * f) - 3}" fill="#9aa3b8" font-size="10" text-anchor="end">${fmtW(maxY * f)}</text>`
     ).join("");
-    const labels = [0, Math.floor(n / 2), n].map((i) =>
+    const labels = [...new Set([0, Math.floor(n / 2), n])].map((i) =>
       `<text x="${X(i)}" y="${H - 6}" fill="#9aa3b8" font-size="10" text-anchor="middle">${data[i].y}年</text>`
     ).join("");
     let evenMark = "";

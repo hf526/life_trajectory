@@ -44,12 +44,14 @@
     if (ctl) ctl.hidden = key !== "windows";
     const nameEl = document.getElementById("curTabName");
     if (nameEl) nameEl.textContent = TABS[key].name;
-    if (push !== false && currentKey() !== key) {
-      history.replaceState(null, "", location.pathname + location.search + "#/" + key);
-      // 注：保留 ?age=&gender=；如需后退栈可换 pushState
-    } else if (push !== false && !location.hash) {
-      history.replaceState(null, "", location.pathname + location.search + "#/" + key);
-    }
+    try {
+      if (push !== false && currentKey() !== key) {
+        history.replaceState(null, "", location.pathname + location.search + "#/" + key);
+        // 注：保留 ?age=&gender=；如需后退栈可换 pushState
+      } else if (push !== false && !location.hash) {
+        history.replaceState(null, "", location.pathname + location.search + "#/" + key);
+      }
+    } catch (e) {} // 沙箱 iframe 下 history 可能不可用，tab 切换本身不受影响
     // 懒初始化一次
     if (!inited.has(key)) {
       inited.add(key);
@@ -79,5 +81,5 @@
 
   switchTab(currentKey(), false);
   // 首屏无 hash 时补上，方便分享深链接
-  if (!location.hash) history.replaceState(null, "", location.pathname + location.search + "#/" + currentKey());
+  if (!location.hash) { try { history.replaceState(null, "", location.pathname + location.search + "#/" + currentKey()); } catch (e) {} }
 })();
