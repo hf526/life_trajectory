@@ -1,0 +1,6 @@
+# WorkBuddy 工作区数据（本地记忆/缓存，不入库）
+.workbuddy/
+
+Thumbs.db
+.DS_Store
+*.log

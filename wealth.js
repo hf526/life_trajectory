@@ -107,6 +107,18 @@
       const late = simulate({ ...p, ageNow: p.ageNow + 10 }, undefined);
       return last.nominal - late.final;
     })();
+    // 结论巨幕：一句话判决，数字由 motion.js 自动接管滚动
+    const years = p.ageEnd - p.ageNow;
+    const gainPct = last.nominal > 0 ? (gain / last.nominal) * 100 : 0;
+    $("wKicker").textContent = `${p.ageNow} → ${p.ageEnd} 岁 · 共 ${years} 年 · 年化 ${(p.ret * 100).toFixed(1)}%`;
+    $("wBig").textContent = fmtW(last.nominal);
+    $("wVerdict").innerHTML =
+      `每月 <b>${Math.round(p.monthly).toLocaleString("en-US")}</b> 元、投满 ${years} 年，` +
+      `复利替你多赚 <b>${fmtW(gain)}</b>，占终值 <b>${gainPct.toFixed(0)}%</b>；` +
+      `同期通胀吃掉 <b>${fmtW(eaten)}</b>。` +
+      (gainPct > 50 ? `钱主要不是存出来的，是时间替你长出来的——开始早比投得多更值钱。`
+        : `投入占了大头，现阶段提高定投额比挑收益率管用。`);
+
     const adv = [
       `通胀吃掉约 <b>${fmtW(eaten)}</b>：只看名义会自我感觉良好，请盯住「实际购买力」。`,
       `年化±2%终值区间 <b>${fmtW(dn.final)} ~ ${fmtW(up.final)}</b>：收益假设差一点，结局差一截，别把高收益当计划。`,

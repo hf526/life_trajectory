@@ -2,6 +2,10 @@
  * 约束类型: 政策硬约束 / 医学强证据 / 统计趋势
  * 补救成本: 低 / 中 / 高 / 不可逆（错过后几乎无法补救）
  * 补救效果: 可基本补足 / 部分可补 / 效果有限 / 几乎无法补救
+ * 注意: 成本/效果是"刚错过"那一刻的基线档案；页面上随错过年数动态降档
+ *       （错过>5年升1档、>15年升2档，封顶"高/效果有限"，见 app.js 的 remedyProfile）
+ * 补救有效期: remedyDeadline = 补救措施本身仍成立的年龄上限（岗位放宽年龄、疫苗说明书、
+ *       生殖中心/打分表上限等）；超过后页面不再叫"补救"，改显示 remedyClosed 止损方案。
  */
 window.LIFE_WINDOWS = [
   {
@@ -67,7 +71,9 @@ window.LIFE_WINDOWS = [
     constraint: "医学强证据",
     remedy: "超龄仍可咨询接种+宫颈筛查/体检并行，但保护效率随暴露风险上升而打折。",
     remedyCost: "低",
-    remedyEffect: "部分可补"
+    remedyEffect: "部分可补",
+    remedyDeadline: 45,
+    remedyClosed: "已超常规接种年龄，补救路径关闭。转定期宫颈筛查+体检——这是止损，不是补救。"
   },
   {
     id: "female-fertility",
@@ -80,7 +86,9 @@ window.LIFE_WINDOWS = [
     constraint: "医学强证据",
     remedy: "备孕检查前置、必要时尽早生殖中心评估，辅助生殖成功率随年龄下降。",
     remedyCost: "高",
-    remedyEffect: "效果有限"
+    remedyEffect: "效果有限",
+    remedyDeadline: 45,
+    remedyClosed: "多数生殖中心已不接诊或活产率极低，先问清数据再投入；领养、丁克也是选择。"
   },
   {
     id: "egg-freeze",
@@ -93,7 +101,9 @@ window.LIFE_WINDOWS = [
     constraint: "医学强证据",
     remedy: "35岁后仍可评估，但需接受成功率下降，优先咨询正规生殖中心。",
     remedyCost: "高",
-    remedyEffect: "效果有限"
+    remedyEffect: "效果有限",
+    remedyDeadline: 45,
+    remedyClosed: "已过常规冻卵年限，投入产出比极差，别为“保存青春”的话术付费。"
   },
   {
     id: "male-fertility",
@@ -171,7 +181,9 @@ window.LIFE_WINDOWS = [
     constraint: "政策硬约束",
     remedy: "超龄转看：放宽至40岁的岗、国企社招、职称考证、体制外同类岗。",
     remedyCost: "中",
-    remedyEffect: "部分可补"
+    remedyEffect: "部分可补",
+    remedyDeadline: 40,
+    remedyClosed: "考编已彻底关门，别再为年龄线耗时间：转国企社招、职称考证、体制外同类岗。"
   },
   {
     id: "compound",
@@ -249,7 +261,9 @@ window.LIFE_WINDOWS = [
     constraint: "政策硬约束",
     remedy: "超龄靠雅思高分、雇主担保、留学转移民等路径补分，周期和费用上升。",
     remedyCost: "高",
-    remedyEffect: "部分可补"
+    remedyEffect: "部分可补",
+    remedyDeadline: 45,
+    remedyClosed: "打分年龄分已归零，常规路径基本关闭；只剩雇主担保等少数路径，费用更高。"
   },
   {
     id: "height-female",

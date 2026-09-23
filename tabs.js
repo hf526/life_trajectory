@@ -4,11 +4,31 @@
  */
 (function () {
   const TABS = {
-    windows: { view: "view-windows", tab: "tab-windows", name: "窗口图谱" },
-    partner: { view: "view-partner", tab: "tab-partner", name: "伴侣去留" },
-    wealth: { view: "view-wealth", tab: "tab-wealth", name: "复利攒钱" },
-    loan: { view: "view-loan", tab: "tab-loan", name: "月供压力" },
-    rentbuy: { view: "view-rentbuy", tab: "tab-rentbuy", name: "买租哪个值" },
+    windows: {
+      view: "view-windows", tab: "tab-windows", name: "窗口图谱",
+      h1: "人生窗口图谱：把 90 年的人生摊成 1080 个格子",
+      docTitle: "人生工具箱：房贷月供计算器、复利定投计算器、买房租房对比",
+    },
+    partner: {
+      view: "view-partner", tab: "tab-partner", name: "伴侣去留",
+      h1: "伴侣筛选计算器：你的条件组合还剩多少人",
+      docTitle: "错过还有下一个吗 · 伴侣条件筛选计算器 | 人生工具箱",
+    },
+    wealth: {
+      view: "view-wealth", tab: "tab-wealth", name: "复利攒钱",
+      h1: "复利定投计算器：每月存 3000，30 年后是多少钱",
+      docTitle: "复利定投计算器 · 每月定投 30 年能攒多少 | 人生工具箱",
+    },
+    loan: {
+      view: "view-loan", tab: "tab-loan", name: "月供压力",
+      h1: "房贷月供计算器：算清月供、收入占比与断供缓冲",
+      docTitle: "房贷月供计算器 · 月供占比与断供缓冲 | 人生工具箱",
+    },
+    rentbuy: {
+      view: "view-rentbuy", tab: "tab-rentbuy", name: "买租哪个值",
+      h1: "买房还是租房更值：两套账本同起点对比 N 年",
+      docTitle: "买房还是租房更值 · 同起点净财富对比 | 人生工具箱",
+    },
   };
   const ALIAS = { levels: "partner", fortune: "partner" }; // 旧 Tab2 链接兼容
   const DEFAULT = "windows";
@@ -44,6 +64,10 @@
     if (ctl) ctl.hidden = key !== "windows";
     const nameEl = document.getElementById("curTabName");
     if (nameEl) nameEl.textContent = TABS[key].name;
+    // h1 与页面标题跟随当前工具：浏览器标签、分享文案、页面主题信号保持一致
+    const pageTitleEl = document.getElementById("pageTitle");
+    if (pageTitleEl && TABS[key].h1) pageTitleEl.textContent = TABS[key].h1;
+    if (TABS[key].docTitle) document.title = TABS[key].docTitle;
     try {
       if (push !== false && currentKey() !== key) {
         history.replaceState(null, "", location.pathname + location.search + "#/" + key);
@@ -56,6 +80,11 @@
     if (!inited.has(key)) {
       inited.add(key);
       try { initializers[key]?.(); } catch (e) { console.error(e); }
+    }
+    // 首屏卡片可能是在隐藏状态下渲染的（深链接到别的 tab），切回来补一次入场
+    if (key === "windows" && window.Motion) {
+      const g = document.getElementById("grid");
+      if (g) window.Motion.reveal(g);
     }
     window.scrollTo({ top: 0 });
   }

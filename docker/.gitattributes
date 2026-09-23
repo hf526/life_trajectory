@@ -1,0 +1,2 @@
+# 部署脚本必须在服务器上能直接执行，强制 LF 换行，避免被 Git 的 autocrlf 转成 CRLF
+deploy.sh text eol=lf
