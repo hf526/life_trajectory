@@ -11,15 +11,23 @@
     house: { loan: 100, rate: 3.3, years: 30, income: 1.2, expense: 0.8, deposit: 10, type: "annuity", job: "normal" },
     car: { loan: 12, rate: 5, years: 3, income: 1.0, expense: 0.5, deposit: 3, type: "annuity", job: "normal" },
   };
-  const RANGES = {
+  // 金额滑杆走分段刻度（低端细、高端粗）：一套房大多 100–200 万，但也要能拉到 600 万以上
+  const SCALES = {
     house: {
-      fLoan: [20, 500, 5], fRate: [1, 8, 0.1],
-      fExpense: [0, 5, 0.1], fDeposit: [0, 200, 1], years: [10, 20, 30],
+      fLoan: [[0, 50, 1], [50, 150, 5], [150, 300, 10], [300, 600, 20], [600, 1000, 50]],
+      fExpense: [[0, 1, 0.05], [1, 3, 0.1], [3, 10, 0.5]],
+      fDeposit: [[0, 20, 1], [20, 100, 5], [100, 300, 10], [300, 600, 20]],
     },
     car: {
-      fLoan: [5, 80, 1], fRate: [1, 12, 0.1],
-      fExpense: [0, 5, 0.1], fDeposit: [0, 50, 1], years: [1, 3, 5],
+      fLoan: [[0, 20, 0.5], [20, 50, 1], [50, 100, 2], [100, 200, 5]],
+      fExpense: [[0, 1, 0.05], [1, 3, 0.1], [3, 10, 0.5]],
+      fDeposit: [[0, 10, 0.5], [10, 50, 1], [50, 200, 5]],
     },
+  };
+  // 百分比/年限这类本来就好滑的，继续用原生量程
+  const RANGES = {
+    house: { fRate: [1, 8, 0.1], years: [10, 20, 30] },
+    car: { fRate: [1, 12, 0.1], years: [1, 3, 5] },
   };
   const SHOCK_BASE = { stable: 0.04, normal: 0.08, volatile: 0.15 }; // 年内收入中断3个月的假设概率
 
@@ -36,7 +44,7 @@
     el.value = Math.round(incomeToPos(wan));
   }
   const num = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
-  const trim1 = (v) => String(parseFloat(Number(v).toFixed(1)));
+  const trim1 = (v) => String(parseFloat(Number(v).toFixed(2))); // 两位小数，多余尾零自动去掉
   const fmtW = (yuan) => {
     const neg = yuan < 0 ? "-" : "";
     const a = Math.abs(yuan) / YUAN;
@@ -51,16 +59,32 @@
     box.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c.dataset.v === v));
   }
 
+  // 金额滑杆经分段刻度换算：value 属性存的是档位序号，不是万元
+  function bindScale(id, segs, val) {
+    const el = $(id);
+    if (!el) return;
+    if (window.SliderScale) window.SliderScale.bind(el, segs, val);
+    else { el.min = segs[0][0]; el.max = segs[segs.length - 1][1]; el.step = segs[0][2]; el.value = val; }
+  }
+  function readScale(id) {
+    const el = $(id);
+    return window.SliderScale ? window.SliderScale.read(el) : Number(el.value);
+  }
+  function writeScale(id, v) {
+    const el = $(id);
+    if (window.SliderScale) window.SliderScale.write(el, v); else el.value = v;
+  }
+
   function getInputs() {
     return {
       mode: chipVal("loanMode") || "house",
       type: chipVal("loanType") || "annuity",
-      loan: Math.max(0, num($("fLoan").value, 0)) * YUAN,
+      loan: Math.max(0, readScale("fLoan")) * YUAN,
       rate: clamp(num($("fRate").value, 0), 0, 20) / 100,
       years: clamp(Math.round(num(chipVal("loanYears"), 0)), 1, 40),
       income: Math.max(0, Math.round(incomeFromPos($("fIncome").value) * 10) / 10) * YUAN,
-      expense: Math.max(0, num($("fExpense").value, 0)) * YUAN,
-      deposit: Math.max(0, num($("fDeposit").value, 0)) * YUAN,
+      expense: Math.max(0, readScale("fExpense")) * YUAN,
+      deposit: Math.max(0, readScale("fDeposit")) * YUAN,
       job: chipVal("loanJob") || "normal",
     };
   }
@@ -180,13 +204,13 @@
     setChips("loanMode", mode);
     setChips("loanType", d.type);
     if (d.job) setChips("loanJob", d.job);
-    setRange("fLoan", ...rg.fLoan, d.loan);
+    bindScale("fLoan", SCALES[mode].fLoan, d.loan);
     setRange("fRate", ...rg.fRate, d.rate);
     buildYears(mode);
     setChips("loanYears", String(d.years));
     setIncomeSlider(d.income);
-    setRange("fExpense", ...rg.fExpense, d.expense);
-    setRange("fDeposit", ...rg.fDeposit, d.deposit);
+    bindScale("fExpense", SCALES[mode].fExpense, d.expense);
+    bindScale("fDeposit", SCALES[mode].fDeposit, d.deposit);
   }
   function restore() {
     try {
@@ -198,12 +222,12 @@
       if (p.type) setChips("loanType", p.type);
       buildYears(mode);
       if (p.years) setChips("loanYears", String(p.years));
-      const rg = RANGES[mode];
-      if (p.loan !== undefined) setRange("fLoan", ...rg.fLoan, p.loan);
+      const rg = RANGES[mode], sc = SCALES[mode];
+      if (p.loan !== undefined) bindScale("fLoan", sc.fLoan, p.loan);
       if (p.rate !== undefined) setRange("fRate", ...rg.fRate, p.rate * 100);
       if (p.income !== undefined) setIncomeSlider(p.income);
-      if (p.expense !== undefined) setRange("fExpense", ...rg.fExpense, p.expense);
-      if (p.deposit !== undefined) setRange("fDeposit", ...rg.fDeposit, p.deposit);
+      if (p.expense !== undefined) bindScale("fExpense", sc.fExpense, p.expense);
+      if (p.deposit !== undefined) bindScale("fDeposit", sc.fDeposit, p.deposit);
       if (p.job) setChips("loanJob", p.job);
       return true;
     } catch (e) { return false; }
@@ -212,8 +236,9 @@
   function init() {
     if (!$("loanForm") || $("loanForm").dataset.bound) { render(); return; }
     $("loanForm").dataset.bound = "1";
-    restore();
-    buildYears(chipVal("loanMode") || "house"); // 无存档首进时补上年限选项
+    // 无存档首进：套用预设（同时把金额滑杆绑上分段刻度）；有存档：restore 里已绑定
+    if (!restore()) fillPreset(chipVal("loanMode") || "house");
+    buildYears(chipVal("loanMode") || "house"); // 补上年限选项
     $("loanForm").addEventListener("input", render);
     $("loanForm").addEventListener("change", render);
     $("loanForm").addEventListener("click", (e) => {

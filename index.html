@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>人生工具箱：房贷月供计算器、复利定投计算器、买房租房对比</title>
-<meta name="description" content="5 个免费在线测算工具：房贷月供计算器（月供占比、断供缓冲、利率压力测试）、复利定投计算器（含通胀后的实际购买力）、买房还是租房更值、伴侣条件筛选人数估算，以及把 90 年人生按月摊成格子的人生窗口图谱。全部本地计算，数据不上传。" />
+<meta name="description" content="5 个免费在线测算工具：房贷月供计算器（月供占比、断供缓冲、利率压力测试）、复利定投计算器（含通胀后的实际购买力）、买房还是租房更值、伴侣条件筛选人数估算，以及把人生按月摊成格子的人生窗口图谱（女性按 85 年、男性按 80 年计）。全部本地计算，数据不上传。" />
 <link rel="canonical" href="https://life.lefng.top/" />
 <meta name="robots" content="index,follow,max-image-preview:large" />
 <meta name="theme-color" content="#141b2d" />
@@ -15,13 +15,13 @@
 <meta property="og:locale" content="zh_CN" />
 <meta property="og:url" content="https://life.lefng.top/" />
 <meta property="og:title" content="人生工具箱 · 月供、复利、买房租房，一次算清" />
-<meta property="og:description" content="月供扛不扛得住？定投 30 年能攒多少？买房还是租房更值？90 年的人生已经用掉多少？5 个工具，纯本地计算。" />
+<meta property="og:description" content="月供扛不扛得住？定投 30 年能攒多少？买房还是租房更值？一辈子（女性 85 年、男性 80 年）已经用掉多少？5 个工具，纯本地计算。" />
 <meta property="og:image" content="https://life.lefng.top/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="人生工具箱 · 月供、复利、买房租房，一次算清" />
-<meta name="twitter:description" content="月供扛不扛得住？定投 30 年能攒多少？买房还是租房更值？90 年的人生已经用掉多少？" />
+<meta name="twitter:description" content="月供扛不扛得住？定投 30 年能攒多少？买房还是租房更值？一辈子（女性 85 年、男性 80 年）已经用掉多少？" />
 <meta name="twitter:image" content="https://life.lefng.top/og.png" />
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23141b2d'/%3E%3Cg fill='%23c9a45c'%3E%3Crect x='6' y='6' width='5' height='5'/%3E%3Crect x='13.5' y='6' width='5' height='5'/%3E%3Crect x='21' y='6' width='5' height='5'/%3E%3Crect x='6' y='13.5' width='5' height='5'/%3E%3Crect x='13.5' y='13.5' width='5' height='5' opacity='.45'/%3E%3Crect x='21' y='13.5' width='5' height='5' opacity='.45'/%3E%3Crect x='6' y='21' width='5' height='5' opacity='.45'/%3E%3Crect x='13.5' y='21' width='5' height='5' opacity='.45'/%3E%3Crect x='21' y='21' width='5' height='5' opacity='.45'/%3E%3C/g%3E%3C/svg%3E" />
@@ -44,7 +44,7 @@
       "isAccessibleForFree": true,
       "offers": { "@type": "Offer", "price": "0", "priceCurrency": "CNY" },
       "featureList": [
-        "人生窗口图谱：把 90 年人生按月摊成格子，查看各类人生窗口的剩余量与截止时点",
+        "人生窗口图谱：按女性 85 年、男性 80 年的口径把人生按月摊成格子，查看各类人生窗口的剩余量与截止时点",
         "房贷月供计算器：等额本息/等额本金月供、月供占收入比、断供缓冲期、利率上浮压力测试",
         "复利定投计算器：按月复利定投，含通胀折算后的实际购买力",
         "买房还是租房对比：同起点逐月迭代，比 N 年后净财富与打平年限",
@@ -98,7 +98,7 @@
   <div class="wrap sub-bar" id="windowsControls">
     <div class="age-ctl">
       <label for="ageRange"><strong id="ageLabel">30</strong>岁</label>
-      <input id="ageRange" type="range" min="0" max="90" step="1" value="30" />
+      <input id="ageRange" type="range" min="0" max="85" step="1" value="30" />
         <input id="ageNumber" type="text" inputmode="numeric" value="30" aria-label="直接输入年龄" />
     </div>
     <div class="gender" role="group" aria-label="性别">
@@ -109,13 +109,13 @@
 </header>
 
 <main class="wrap wide">
-  <h1 class="page-title" id="pageTitle">人生窗口图谱：把 90 年的人生摊成 1080 个格子</h1>
+  <h1 class="page-title" id="pageTitle">人生窗口图谱：女性 85 年、男性 80 年，把一辈子摊成格子</h1>
   <!-- Tab 1: 人生窗口图谱（现有功能，原样保留） -->
   <section id="view-windows" role="tabpanel" aria-labelledby="tab-windows">
     <div class="hero" id="lifeHero">
       <div class="hero-nums">
         <div class="hero-num"><small>已用掉</small><b id="hDays">–</b><span>天</span></div>
-        <div class="hero-num alt"><small>按 90 岁算还剩</small><b id="hLeft">–</b><span>天</span></div>
+        <div class="hero-num alt"><small id="hLeftLabel">按 85 岁算还剩</small><b id="hLeft">–</b><span>天</span></div>
         <div class="hero-num pct"><small>人生进度</small><b id="hPct">–</b></div>
       </div>
       <div class="hero-gridwrap"><div class="hero-grid" id="hGrid"></div></div>
@@ -124,14 +124,14 @@
           <span><i class="on"></i>已过</span>
           <span><i></i>未到</span>
           <span><i class="now"></i>现在</span>
-          <em>一格 = 一个月，一列 = 一岁，按 90 岁计</em>
+          <em id="hLegendYears">一格 = 一个月，一列 = 一岁，按女性 85 岁计</em>
         </div>
         <p class="hero-kicker" id="hKicker"></p>
       </div>
     </div>
 
     <p class="lede">拖年龄，全场重算。点卡片看完整依据与补救。<span id="curLine"></span></p>
-    <p class="intro-sub">人生窗口图谱把 90 年按月摊成 1080 格：已过的点亮，未到的留白。覆盖生理健康、生育家庭、认知教育、职业财富、关系社交、迁移身份六个领域，每条窗口给出时间区间、剩余余量和约束等级（政策硬约束 / 医学强证据 / 统计趋势）。</p>
+    <p class="intro-sub">人生窗口图谱把一辈子按月摊成格子：女性按 85 年（1020 格）、男性按 80 年（960 格），已过的点亮，未到的留白。覆盖生理健康、生育家庭、认知教育、职业财富、关系社交、迁移身份六个领域，每条窗口给出时间区间、剩余余量和约束等级（政策硬约束 / 医学强证据 / 统计趋势）。</p>
 
     <div class="toolbar">
       <div class="t-group" id="statusFilter" role="group" aria-label="按余量筛选">
@@ -161,6 +161,7 @@
     <div id="grid" class="grid"></div>
 
     <footer class="foot"><details><summary>口径说明（点开）</summary>
+      <p>寿命口径：生命格子与人生进度按<b>女性 85 岁、男性 80 岁</b>摊算（参考人均预期寿命量级），是统计口径不是个人寿命预测，仅用于把时间换算成可见的格子。</p>
       <p>约束三档：<b>政策硬约束</b>（明确年龄线，以官方最新公告为准）、<b>医学强证据</b>（指南/共识）、<b>统计趋势</b>（人群数据，不代表个人命运）。信息整理，非医疗法律建议。</p>
     </details></footer>
   </section>
@@ -200,7 +201,7 @@
       </div>
       <div class="panel">
         <h2>相遇</h2>
-        <div class="prow"><label>社交量 <b id="vSocial">5</b> 人/月 <small>每月认识的新单身异性</small></label><input id="pSocial" type="range" min="1" max="30" step="1" value="5" /></div>
+        <div class="prow"><label>社交量 <b id="vSocial">2</b> 人/月 <small>每月认识的新单身异性</small></label><input id="pSocial" type="range" min="1" max="30" step="1" value="2" /></div>
       </div>
       </div>
       <div class="panel dark sticky">
@@ -312,13 +313,13 @@
     <div class="calc">
       <form id="rentbuyForm" class="panel" autocomplete="off">
         <h2>输入假设 <button id="rbReset" class="linkbtn" type="button">重置</button></h2>
-        <div class="prow"><label>贷款金额 <b id="vLoanAmt">210</b> 万</label><input id="rLoanAmt" type="range" min="0" max="700" step="10" value="210" /></div>
-        <div class="prow"><label>首付金额 <b id="vDownPay">90</b> 万</label><input id="rDownPay" type="range" min="0" max="500" step="5" value="90" /></div>
+        <div class="prow"><label>贷款金额 <b id="vLoanAmt">105</b> 万</label><input id="rLoanAmt" type="range" min="0" max="123" step="1" value="55" /></div>
+        <div class="prow"><label>首付金额 <b id="vDownPay">45</b> 万</label><input id="rDownPay" type="range" min="0" max="104" step="1" value="45" /></div>
         <div class="prow"><label>房贷年利率 <b id="vRateR">3.3</b> %</label><input id="rRate" type="range" min="1" max="8" step="0.1" value="3.3" /></div>
         <div class="prow"><label>贷款年限</label><div class="chips" id="buyYears">
           <button class="chip" data-v="10" type="button">10年</button><button class="chip" data-v="20" type="button">20年</button><button class="chip active" data-v="30" type="button">30年</button>
         </div></div>
-        <div class="prow"><label>同地段月租金 <b id="vRent">4000</b> 元</label><input id="rRent" type="range" min="1000" max="20000" step="100" value="4000" /></div>
+        <div class="prow"><label>同地段月租金 <b id="vRent">3000</b> 元</label><input id="rRent" type="range" min="0" max="73" step="1" value="25" /></div>
         <div class="prow"><label>租金年涨幅 <b id="vRentG">3</b> %</label><input id="rRentG" type="range" min="0" max="10" step="0.5" value="3" /></div>
         <div class="prow"><label>房价年涨幅 <b id="vHomeG">2</b> %</label><input id="rHomeG" type="range" min="-2" max="10" step="0.5" value="2" /></div>
         <div class="prow"><label>住几年 <b id="vHold">10</b> 年</label><input id="rHold" type="range" min="1" max="30" step="1" value="10" /></div>
@@ -376,6 +377,7 @@
 </div>
 
 <script src="./data.js"></script>
+<script src="./scale.js"></script>
 <script src="./motion.js"></script>
 <script src="./hero.js"></script>
 <script src="./app.js"></script>

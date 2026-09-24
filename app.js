@@ -9,6 +9,10 @@
   const REVEAL = window.Motion ? " reveal" : ""; // 无动效模块时卡片照常显示，不留空白
 
   const state = { age: 30, gender: "female", status: "all", domain: "all", sort: "start" };
+  // 寿命口径（女 85 / 男 80）：卡片时间轴与生命格子共用同一个分母，见 data.js 的 LIFE_SPAN
+  const SPAN = window.LIFE_SPAN || { female: 85, male: 80 };
+  const spanOf = (g) => SPAN[g] || SPAN.female || 85;
+  const maxAge = () => spanOf(state.gender);
   const GROUPS = [
     { name: "身体监控", domains: ["生理健康", "生育家庭"] },
     { name: "教育成长", domains: ["认知教育", "关系社交"] },
@@ -18,10 +22,11 @@
 
   try {
     const q = new URLSearchParams(location.search);
-    const a = parseInt(q.get("age"), 10);
-    if (!Number.isNaN(a)) state.age = Math.max(0, Math.min(90, a));
+    // 先定性别再夹年龄：男女的年龄上限不同
     const g = q.get("gender");
     if (g === "male" || g === "female") state.gender = g;
+    const a = parseInt(q.get("age"), 10);
+    if (!Number.isNaN(a)) state.age = Math.max(0, Math.min(maxAge(), a));
   } catch (e) {}
 
   function getStatus(w, age) {
@@ -37,6 +42,7 @@
   }
 
   function sync() {
+    ageRange.max = String(maxAge()); // 滑杆上限跟随性别（女 85 / 男 80）
     ageRange.value = state.age; ageNumber.value = state.age; ageLabel.textContent = state.age;
     btnF.classList.toggle("active", state.gender === "female");
     btnM.classList.toggle("active", state.gender === "male");
@@ -114,13 +120,16 @@
     return "";
   }
 
-  function miniBar(w, age) {    const l = (w.start / 90 * 100).toFixed(2);
-    const wd = (Math.max(1, w.end - w.start) / 90 * 100).toFixed(2);
-    const me = (Math.max(0, Math.min(90, age)) / 90 * 100).toFixed(2);
+  function miniBar(w, age) {
+    const S = maxAge();
+    const l = (w.start / S * 100).toFixed(2);
+    const wd = (Math.max(1, w.end - w.start) / S * 100).toFixed(2);
+    const me = (Math.max(0, Math.min(S, age)) / S * 100).toFixed(2);
     return `<div class="mini"><span class="sp" style="left:${l}%;width:${wd}%"></span><span class="me" style="left:${me}%"></span></div>`;
   }
 
   function render() {
+    state.age = Math.max(0, Math.min(maxAge(), state.age | 0)); // 切性别时把超出的年龄收回来
     sync();
     const list = visible();
     const rows = list.map((w) => ({ w, st: getStatus(w, state.age) }));
@@ -187,15 +196,16 @@
     const item = current[i];
     if (!item) return;
     const { w, st } = item;
-    const l = (w.start / 90 * 100).toFixed(2);
-    const wd = (Math.max(1, w.end - w.start) / 90 * 100).toFixed(2);
-    const me = (Math.max(0, Math.min(90, state.age)) / 90 * 100).toFixed(2);
+    const S = maxAge();
+    const l = (w.start / S * 100).toFixed(2);
+    const wd = (Math.max(1, w.end - w.start) / S * 100).toFixed(2);
+    const me = (Math.max(0, Math.min(S, state.age)) / S * 100).toFixed(2);
     sheetBody.innerHTML =
       `<div class="kicker"><span>${w.domain}</span><span>${w.constraint}</span><span>当前：${state.age}岁 · ${st.tag}</span></div>` +
       `<h2 id="sheetTitle">${w.title}</h2>` +
       `<div style="color:var(--muted);font-size:12px">关键区间 ${w.start}–${w.end} 岁</div>` +
       `<div class="track"><span class="sp" style="left:${l}%;width:${wd}%"></span><span class="me" style="left:${me}%"></span></div>` +
-      `<div class="scale"><span>0</span><span>30</span><span>60</span><span>90岁</span></div>` +
+      `<div class="scale"><span>0</span><span>${Math.round(S / 3)}</span><span>${Math.round(S * 2 / 3)}</span><span>${S}岁</span></div>` +
       `<p>${w.desc}</p><p class="basis">${w.basis}</p>` +
       (() => {
         const g = remedyGrade(w, st);
@@ -225,7 +235,7 @@
   ageNumber.addEventListener("change", (e) => {
     let v = parseInt(e.target.value, 10);
     if (Number.isNaN(v)) v = state.age;
-    state.age = Math.max(0, Math.min(90, v));
+    state.age = Math.max(0, Math.min(maxAge(), v));
     render();
   });
   btnF.addEventListener("click", () => { state.gender = "female"; render(); });
@@ -236,6 +246,30 @@
   });
   domainFilter.addEventListener("change", (e) => { state.domain = e.target.value; render(); });
   sortSel.addEventListener("change", (e) => { state.sort = e.target.value; render(); });
+  // 复制链接四级兜底：clipboard API → execCommand → 降级提示。
+  // 微信内置浏览器/部分 webview 没有 navigator.clipboard，alert 也可能被拦，
+  // 所以最后一步不依赖弹窗，直接改按钮文字反馈。
+  function legacyCopy(text) {
+    try {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.setAttribute("readonly", "");
+      ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;pointer-events:none;";
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      const ok = document.execCommand("copy");
+      ta.remove();
+      return !!ok;
+    } catch (e) { return false; }
+  }
+  async function copyText(text) {
+    // 不安全上下文里 navigator.clipboard 本身就是 undefined，不必再查 isSecureContext
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      try { await navigator.clipboard.writeText(text); return true; } catch (e) { /* 权限被拒时继续降级 */ }
+    }
+    return legacyCopy(text);
+  }
   $("#btnShare").addEventListener("click", async () => {
     const btn = $("#btnShare");
     const tabNames = { windows: "人生窗口图谱", partner: "错过还有下一个吗", wealth: "复利要怎么攒", loan: "月供扛得住吗", rentbuy: "买还是租更值" };
@@ -248,17 +282,15 @@
       text: onWindows ? `人生窗口图谱：${state.age}岁 · ${state.gender === "female" ? "女性" : "男性"}` : (tabNames[hk] || "人生工具箱"),
       url: location.href,
     };
-    try {
-      if (navigator.share) { await navigator.share(shareData); return; }
-      await navigator.clipboard.writeText(location.href);
-      btn.textContent = "链接已复制";
+    const done = (msg) => {
+      btn.textContent = msg;
       setTimeout(() => (btn.textContent = "分享"), 1500);
-    } catch (e) {
-      if (e && e.name === "AbortError") return;
-      try { await navigator.clipboard.writeText(location.href); btn.textContent = "链接已复制"; }
-      catch (_) { alert(location.href); return; }
-      setTimeout(() => (btn.textContent = "分享"), 1500);
+    };
+    if (navigator.share) {
+      try { await navigator.share(shareData); return; }
+      catch (e) { if (e && e.name === "AbortError") return; /* 用户取消之外的情况继续走复制 */ }
     }
+    done((await copyText(location.href)) ? "链接已复制" : "复制失败，请手动复制地址");
   });
 
   render();

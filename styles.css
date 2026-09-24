@@ -229,7 +229,8 @@ select{background:var(--card);border:1px solid var(--line);border-radius:7px;pad
 .hero-num.pct{margin-left:auto}
 .hero-gridwrap{margin-top:12px;overflow-x:auto;scrollbar-width:none}
 .hero-gridwrap::-webkit-scrollbar{display:none}
-.hero-grid{display:grid;grid-template-columns:repeat(90,1fr);gap:2px;min-width:560px}
+/* 列数由 hero.js 按性别写入（女 85 / 男 80），这里的 85 只是无 JS 时的兜底 */
+.hero-grid{display:grid;grid-template-columns:repeat(85,1fr);gap:2px;min-width:560px}
 .hcell{aspect-ratio:1/1;border-radius:1px;background:#2a3550}
 .hcell.on{background:#c9a45c}
 .hcell.now{background:#e24b4a}

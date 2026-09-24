@@ -11,7 +11,33 @@
 
   const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
   const num = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
-  const trim1 = (v) => String(parseFloat(Number(v).toFixed(1)));
+  // 金额滑杆走分段刻度（低端细、高端粗）：一套房大多 100–200 万，但也要能拉到 600 万以上
+  const SCALES = {
+    rLoanAmt: [[0, 50, 1], [50, 150, 5], [150, 300, 10], [300, 600, 20], [600, 1000, 50]],
+    rDownPay: [[0, 50, 1], [50, 150, 5], [150, 300, 10], [300, 600, 20]],
+    rRent: [[500, 3000, 100], [3000, 6000, 200], [6000, 12000, 500], [12000, 30000, 1000]],
+  };
+  const DEFAULTS = { loan: 105, down: 45, rent: 3000 };
+  function bindScale(id, segs, val) {
+    const el = $(id);
+    if (!el) return;
+    if (window.SliderScale) window.SliderScale.bind(el, segs, val);
+    else { el.min = segs[0][0]; el.max = segs[segs.length - 1][1]; el.step = segs[0][2]; el.value = val; }
+  }
+  function readScale(id) {
+    const el = $(id);
+    return window.SliderScale ? window.SliderScale.read(el) : Number(el.value);
+  }
+  function writeScale(id, v) {
+    const el = $(id);
+    if (window.SliderScale) window.SliderScale.write(el, v); else el.value = v;
+  }
+  function applyDefaults() {
+    writeScale("rLoanAmt", DEFAULTS.loan);
+    writeScale("rDownPay", DEFAULTS.down);
+    writeScale("rRent", DEFAULTS.rent);
+  }
+  const trim1 = (v) => String(parseFloat(Number(v).toFixed(2))); // 两位小数，多余尾零自动去掉
   const fmtW = (yuan) => {
     const neg = yuan < 0 ? "-" : "";
     const a = Math.abs(yuan) / YUAN;
@@ -27,15 +53,15 @@
   }
 
   function getInputs() {
-    const loan = Math.max(0, num($("rLoanAmt").value, 0)) * YUAN;
-    const down = Math.max(0, num($("rDownPay").value, 0)) * YUAN;
+    const loan = Math.max(0, readScale("rLoanAmt")) * YUAN;
+    const down = Math.max(0, readScale("rDownPay")) * YUAN;
     return {
       price: loan + down, // 房价 = 贷款 + 首付
       down,
       loan,
       rate: clamp(num($("rRate").value, 0), 0, 20) / 100,
       years: clamp(Math.round(num(chipVal("buyYears"), 0)), 1, 40),
-      rent: Math.max(0, num($("rRent").value, 0)),
+      rent: Math.max(0, readScale("rRent")),
       rentG: clamp(num($("rRentG").value, 0), -5, 20) / 100,
       homeG: clamp(num($("rHomeG").value, 0), -10, 20) / 100,
       hold: clamp(Math.round(num($("rHold").value, 0)), 1, 30),
@@ -166,12 +192,12 @@
       const raw = localStorage.getItem(LS_KEY);
       if (!raw) return false;
       const q = JSON.parse(raw);
-      if (q.loanAmt !== undefined) $("rLoanAmt").value = q.loanAmt;
-      else if (q.price !== undefined) $("rLoanAmt").value = Math.round(q.price * (1 - (q.downPct ?? 0.3)));
-      if (q.downPay !== undefined) $("rDownPay").value = q.downPay;
+      if (q.loanAmt !== undefined) writeScale("rLoanAmt", q.loanAmt);
+      else if (q.price !== undefined) writeScale("rLoanAmt", Math.round(q.price * (1 - (q.downPct ?? 0.3))));
+      if (q.downPay !== undefined) writeScale("rDownPay", q.downPay);
       if (q.rate !== undefined) $("rRate").value = q.rate * 100;
       if (q.years) setChips("buyYears", String(q.years));
-      if (q.rent !== undefined) $("rRent").value = Math.round(q.rent);
+      if (q.rent !== undefined) writeScale("rRent", Math.round(q.rent));
       if (q.rentG !== undefined) $("rRentG").value = q.rentG * 100;
       if (q.homeG !== undefined) $("rHomeG").value = q.homeG * 100;
       if (q.hold !== undefined) $("rHold").value = q.hold;
@@ -183,7 +209,11 @@
   function init() {
     if (!$("rentbuyForm") || $("rentbuyForm").dataset.bound) { render(); return; }
     $("rentbuyForm").dataset.bound = "1";
-    restore();
+    // 先绑分段刻度（写档位序号），再回填存档值（换算成最近档位）
+    bindScale("rLoanAmt", SCALES.rLoanAmt, DEFAULTS.loan);
+    bindScale("rDownPay", SCALES.rDownPay, DEFAULTS.down);
+    bindScale("rRent", SCALES.rRent, DEFAULTS.rent);
+    if (!restore()) applyDefaults();
     $("rentbuyForm").addEventListener("input", render);
     $("rentbuyForm").addEventListener("change", render);
     $("rentbuyForm").addEventListener("click", (e) => {
@@ -196,6 +226,7 @@
       try { localStorage.removeItem(LS_KEY); } catch (e) {}
       $("rentbuyForm").reset();
       setChips("buyYears", "30");
+      applyDefaults(); // form.reset 会把滑杆打回 HTML 默认值，分段滑杆要重新定位
       render();
     });
     render();

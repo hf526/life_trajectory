@@ -6,7 +6,7 @@
   const TABS = {
     windows: {
       view: "view-windows", tab: "tab-windows", name: "窗口图谱",
-      h1: "人生窗口图谱：把 90 年的人生摊成 1080 个格子",
+      h1: "人生窗口图谱：女性 85 年、男性 80 年，把一辈子摊成格子",
       docTitle: "人生工具箱：房贷月供计算器、复利定投计算器、买房租房对比",
     },
     partner: {

@@ -86,7 +86,7 @@
       city: city.n,
       tier: city.t,
       base: city.s * 10000, // 单身总数（人）
-      social: Math.max(1, parseInt($("pSocial").value, 10) || 5),
+      social: Math.max(1, parseInt($("pSocial").value, 10) || 2),
     };
   }
 
@@ -355,7 +355,7 @@
       setRadio("edu", "any"); setRadio("income", "any"); setRadio("asset", "any");
       committedCity = DEFAULT_CITY;
       if ($("pCityInput")) $("pCityInput").value = committedCity;
-      $("pSocial").value = 5;
+      $("pSocial").value = 2;
       render();
     });
     render();
