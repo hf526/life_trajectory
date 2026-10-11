@@ -7,29 +7,32 @@
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "partner-v1";
 
-  // ---- 城市表（s = 18–50岁单身总数，单位万人，由常住人口×0.175折算：18–50岁占比约50% × 单身率约35%，量级估算） ----
+  // ---- 城市表（s = 18–50岁单身总数，万人；2026-10 按"2024常住人口 × 18–50岁占比 × 单身率"重算） ----
+  // 18–50岁占比按七普年龄结构分档（深圳15–59岁占79.5%、东莞81.4%、广州/佛山/厦门>73%，东北/环渤海偏低→44%，
+  // 多数城市48–52%）；单身率=未婚+离异/丧偶估算，分线级（一线34%/新一线32%/二线30%/三线28%）。
+  // 抽样校验：北京2183×0.48×0.34≈356、成都2148×0.48×0.32≈330、深圳1799×0.58×0.34≈355。
   // t 为线级，只决定学历/收入/资产的城市系数
   const CITIES = [
-    { n: "北京", t: "tier1", s: 380 }, { n: "上海", t: "tier1", s: 440 },
-    { n: "广州", t: "tier1", s: 330 }, { n: "深圳", t: "tier1", s: 310 },
-    { n: "成都", t: "new1", s: 380 }, { n: "重庆", t: "new1", s: 560 },
-    { n: "杭州", t: "new1", s: 220 }, { n: "武汉", t: "new1", s: 240 },
-    { n: "苏州", t: "new1", s: 230 }, { n: "西安", t: "new1", s: 230 },
-    { n: "南京", t: "new1", s: 170 }, { n: "天津", t: "new1", s: 240 },
-    { n: "郑州", t: "new1", s: 230 }, { n: "长沙", t: "new1", s: 180 },
-    { n: "东莞", t: "new1", s: 180 }, { n: "佛山", t: "new1", s: 170 },
-    { n: "宁波", t: "new1", s: 170 }, { n: "青岛", t: "new1", s: 180 },
-    { n: "沈阳", t: "new1", s: 160 },
-    { n: "合肥", t: "tier2", s: 180 }, { n: "济南", t: "tier2", s: 160 },
-    { n: "福州", t: "tier2", s: 150 }, { n: "厦门", t: "tier2", s: 90 },
-    { n: "昆明", t: "tier2", s: 120 }, { n: "大连", t: "tier2", s: 130 },
-    { n: "长春", t: "tier2", s: 160 }, { n: "哈尔滨", t: "tier2", s: 130 },
-    { n: "南昌", t: "tier2", s: 110 }, { n: "南宁", t: "tier2", s: 160 },
-    { n: "贵阳", t: "tier2", s: 110 }, { n: "太原", t: "tier2", s: 90 },
-    { n: "石家庄", t: "tier2", s: 200 }, { n: "温州", t: "tier2", s: 170 },
-    { n: "无锡", t: "tier2", s: 130 }, { n: "泉州", t: "tier2", s: 160 },
-    { n: "洛阳", t: "tier3", s: 120 }, { n: "桂林", t: "tier3", s: 90 },
-    { n: "柳州", t: "tier3", s: 70 }, { n: "襄阳", t: "tier3", s: 100 },
+    { n: "北京", t: "tier1", s: 356 }, { n: "上海", t: "tier1", s: 405 },
+    { n: "广州", t: "tier1", s: 335 }, { n: "深圳", t: "tier1", s: 355 },
+    { n: "成都", t: "new1", s: 330 }, { n: "重庆", t: "new1", s: 449 },
+    { n: "杭州", t: "new1", s: 210 }, { n: "武汉", t: "new1", s: 212 },
+    { n: "苏州", t: "new1", s: 199 }, { n: "西安", t: "new1", s: 201 },
+    { n: "南京", t: "new1", s: 147 }, { n: "天津", t: "new1", s: 192 },
+    { n: "郑州", t: "new1", s: 217 }, { n: "长沙", t: "new1", s: 161 },
+    { n: "东莞", t: "new1", s: 195 }, { n: "佛山", t: "new1", s: 160 },
+    { n: "宁波", t: "new1", s: 149 }, { n: "青岛", t: "new1", s: 146 },
+    { n: "沈阳", t: "new1", s: 130 },
+    { n: "合肥", t: "tier2", s: 144 }, { n: "济南", t: "tier2", s: 125 },
+    { n: "福州", t: "tier2", s: 112 }, { n: "厦门", t: "tier2", s: 83 },
+    { n: "昆明", t: "tier2", s: 115 }, { n: "大连", t: "tier2", s: 99 },
+    { n: "长春", t: "tier2", s: 120 }, { n: "哈尔滨", t: "tier2", s: 124 },
+    { n: "南昌", t: "tier2", s: 95 }, { n: "南宁", t: "tier2", s: 129 },
+    { n: "贵阳", t: "tier2", s: 103 }, { n: "太原", t: "tier2", s: 72 },
+    { n: "石家庄", t: "tier2", s: 148 }, { n: "温州", t: "tier2", s: 141 },
+    { n: "无锡", t: "tier2", s: 108 }, { n: "泉州", t: "tier2", s: 128 },
+    { n: "洛阳", t: "tier3", s: 95 }, { n: "桂林", t: "tier3", s: 61 },
+    { n: "柳州", t: "tier3", s: 51 }, { n: "襄阳", t: "tier3", s: 71 },
     { n: "其他城市", t: "tier3", s: 100 },
   ];
   const TIER_NAME = { tier1: "一线", new1: "新一线", tier2: "二线", tier3: "三线及以下" };
@@ -37,18 +40,40 @@
   const cityOf = (name) => CITIES.find((c) => c.n === name) || CITIES.find((c) => c.n === DEFAULT_CITY);
   const cityLabel = (name) => cityOf(name).n;
   let committedCity = DEFAULT_CITY; // 已确认的城市；输入框打字过程中不污染计算
-  const EDU_BASE = { any: 1, dz: 0.45, bk: 0.25, ms: 0.06 };
+  // 学历基线：七普15岁+大学文化18.8%（北京42.0%/上海33.9%），18–50岁城市口径按年轻队列推算取大专+35%
+  const EDU_BASE = { any: 1, dz: 0.35, bk: 0.18, ms: 0.04 };
   const EDU_NAME = { any: "学历不限", low: "大专以下", dz: "大专+", bk: "本科+", ms: "硕士+" };
   const EDU_CITY_MULT = { tier1: 1.3, new1: 1.15, tier2: 1.0, tier3: 0.8, tier4: 0.7 };
-  const INC_BASE = { any: 1, 10: 0.40, 18: 0.22, 50: 0.04, 100: 0.008 };
+  // 收入基线锚定个税申报数据（2024–2025）：正式就业申报人中约三成需缴个税（≈年入10万+）、年入100万+约占申报人1%；
+  // 工具基数含学生/非正式就业，折算后取基准（10万+20%、18万+7%、50万+1.5%、100万+0.5%），线级系数约±30–40%
+  const INC_BASE = { any: 1, 10: 0.20, 18: 0.07, 50: 0.015, 100: 0.005 };
   const INC_NAME = { any: "收入不限", low: "年入10万以下", 10: "年入10万+", 18: "年入18万+", 50: "年入50万+", 100: "年入100万+" };
   const INC_CITY_MULT = { tier1: 1.4, new1: 1.2, tier2: 1.0, tier3: 0.7, tier4: 0.6 };
-  const ASSET_BASE = { any: 1, 50: 0.25, 200: 0.08, 500: 0.02 };
+  // 资产基线：参照央行《2019年城镇居民家庭资产负债调查》（净资产中位数141万、前10%家庭占总资产47.5%），
+  // 18–50岁单身个体按家庭口径折减后取值，仍属量级估算
+  const ASSET_BASE = { any: 1, 50: 0.18, 200: 0.05, 500: 0.012 };
   const ASSET_NAME = { any: "资产不限", low: "资产50万以下", 50: "资产50万+", 200: "资产200万+", 500: "资产500万+" };
   const ASSET_CITY_MULT = { tier1: 1.3, new1: 1.15, tier2: 1.0, tier3: 0.8, tier4: 0.7 };
-  const HEIGHT = { female: { mean: 160, sd: 5.5 }, male: { mean: 173, sd: 6 } }; // 找女生/找男生
-  const LOOKS = { mean: 6, sd: 1.5 }; // 颜值1–10分正态近似
-  const AGE_LO = 18, AGE_HI = 50, AGE_SPAN = AGE_HI - AGE_LO + 1; // 33
+  // 身高均值取 2020 国民体质监测口径（18-44岁男169.7/女158.0，取整），不是择偶偏好均值
+  const HEIGHT = { female: { mean: 158, sd: 5.5 }, male: { mean: 170, sd: 6 } }; // 找女生/找男生
+  const LOOKS = { mean: 6, sd: 1.5 }; // 颜值1–10分正态近似（主观刻度，无普查口径）
+  const AGE_LO = 18, AGE_HI = 50;
+  // 18–50岁分年龄单身占比（%）：锚点为 2024《中国人口和就业统计年鉴》（25–29岁未婚率54.7%、30–34岁20.7%、30岁31.3%）、
+  // 2023年35岁未婚率11.2%、七普25岁未婚率73.0%，其余年龄插值，并叠加离异/丧偶估算（约0.5–5个百分点，随年龄上升）。
+  // 年龄筛选按这条曲线加权（单身人群年龄分布不是均匀的：24–32岁约占全部18–50岁单身者的39%，远高于按年龄数的27%）。
+  const SINGLE_AGE = [
+    99.5, 99.0, 98.5, 98.0, 97.0, 95.0, 91.5,
+    74.5, 69.5, 64.5, 59.5, 52.5, 34.3, 30.5,
+    27.0, 24.0, 21.3, 15.2, 14.0, 12.8, 11.7,
+    11.0, 10.7, 10.4, 10.1, 9.8, 9.5, 9.2,
+    9.0, 8.8, 8.6, 8.5, 8.4,
+  ];
+  const SINGLE_TOTAL = SINGLE_AGE.reduce((a, b) => a + b, 0);
+  const singleSum = (lo, hi) => {
+    let s = 0;
+    for (let a = Math.max(AGE_LO, lo); a <= Math.min(AGE_HI, hi); a++) s += SINGLE_AGE[a - AGE_LO];
+    return s;
+  };
 
   // 标准正态 CDF（erf 近似）
   function phi(z) {
@@ -92,7 +117,7 @@
 
   function parts(p) {
     const lo = Math.max(p.ageMin, AGE_LO), hi = Math.min(p.ageMax, AGE_HI);
-    const pAge = Math.max(1e-9, hi - lo + 1) / AGE_SPAN;
+    const pAge = Math.max(1e-9, singleSum(lo, hi)) / SINGLE_TOTAL; // 目标年龄段占全部18–50岁单身者的比例
     const h = HEIGHT[p.gender];
     const pHeight = Math.max(1e-9, 1 - phi((p.height - h.mean) / h.sd));
     const pLooks = Math.max(1e-9, 1 - phi((p.looks - LOOKS.mean) / LOOKS.sd));
@@ -273,6 +298,13 @@
     return true;
   }
 
+  // 两个年龄滑杆可能被拖成交叉（最小>最大）：计算里会自动交换，这里把滑块位置也归一，
+  // 否则会出现"显示 30–40 岁、两个滑块却是反的"。只在 change/初始化时做，拖拽中不打架。
+  function normalizeAges() {
+    const a = parseInt($("pAgeMin").value, 10), b = parseInt($("pAgeMax").value, 10);
+    if (Number.isFinite(a) && Number.isFinite(b) && a > b) { $("pAgeMin").value = b; $("pAgeMax").value = a; }
+  }
+
   function restore() {
     try {
       const raw = localStorage.getItem(LS_KEY);
@@ -296,10 +328,11 @@
     if (!$("partnerForm") || $("partnerForm").dataset.bound) { render(); return; }
     $("partnerForm").dataset.bound = "1";
     const had = restore();
+    normalizeAges(); // 脏存档里 min>max 时先归一，再首渲
     if ($("pCityInput")) $("pCityInput").value = committedCity;
     bindChips("pGender", (v) => { if (!had) $("pHeight").value = v === "female" ? 160 : 175; });
     $("partnerForm").addEventListener("input", render);
-    $("partnerForm").addEventListener("change", render);
+    $("partnerForm").addEventListener("change", () => { normalizeAges(); render(); });
     // 城市输入框：打字只过滤候选（不污染计算），change/回车/点选才确认
     (function bindCity() {
       const inp = $("pCityInput");

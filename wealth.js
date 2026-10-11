@@ -102,10 +102,11 @@
     const up = simulate(p, clamp(p.ret + 0.02, -0.05, 0.15));
     const dn = simulate(p, clamp(p.ret - 0.02, -0.05, 0.15));
     const eaten = last.nominal - last.real;
-    const early = (() => { // 早10年开始差多少：对比少10年
+    const early = (() => { // 晚10年开始少多少：拆成"少投的本金 + 少赚的复利"两项，别把多投的钱算成时间红利
       if (p.ageEnd - p.ageNow < 15) return null;
       const late = simulate({ ...p, ageNow: p.ageNow + 10 }, undefined);
-      return last.nominal - late.final;
+      const lessContrib = s.contribTotal - late.contribTotal;
+      return { total: last.nominal - late.final, lessContrib, lessGrowth: last.nominal - late.final - lessContrib };
     })();
     // 结论巨幕：一句话判决，数字由 motion.js 自动接管滚动
     const years = p.ageEnd - p.ageNow;
@@ -123,7 +124,7 @@
       `通胀吃掉约 <b>${fmtW(eaten)}</b>：只看名义会自我感觉良好，请盯住「实际购买力」。`,
       `年化±2%终值区间 <b>${fmtW(dn.final)} ~ ${fmtW(up.final)}</b>：收益假设差一点，结局差一截，别把高收益当计划。`,
     ];
-    if (early !== null && early > 0) adv.push(`早10年开始多出约 <b>${fmtW(early)}</b>：${p.ageNow < 35 ? "你还在便宜窗口，" : ""}开始早比选得好更重要。`);
+    if (early && early.total > 0) adv.push(`晚10年开始少 <b>${fmtW(early.total)}</b>：其中少投本金 ${fmtW(early.lessContrib)}、少赚复利 ${fmtW(early.lessGrowth)}——${p.ageNow < 35 ? "你还在便宜窗口，" : ""}开始早比选得好更重要。`);
     if (s.contribTotal > 0 && gain / last.nominal < 0.3) adv.push(`投入占比超七成：现阶段<b>提高定投额</b>比纠结收益率管用。`);
     else if (last.nominal > 0) adv.push(`复利已接管：后期波动会很大，拿住比折腾重要，留足应急再定投。`);
     $("wealthAdvice").innerHTML = adv.slice(0, 3).map((a) => `<li>${a}</li>`).join("");
