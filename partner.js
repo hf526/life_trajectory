@@ -6,6 +6,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "partner-v1";
+  const { chipVal, setChips } = window.Util;
 
   // ---- 城市表（s = 18–50岁单身总数，万人；2026-10 按"2024常住人口 × 18–50岁占比 × 单身率"重算） ----
   // 18–50岁占比按七普年龄结构分档（深圳15–59岁占79.5%、东莞81.4%、广州/佛山/厦门>73%，东北/环渤海偏低→44%，
@@ -84,10 +85,6 @@
     return z > 0 ? p : 1 - p;
   }
 
-  const chipVal = (id) => {
-    const el = $(id)?.querySelector(".chip.active");
-    return el ? el.dataset.v : null;
-  };
   const radioVal = (name) => document.querySelector(`input[name="${name}"]:checked`)?.value;
   function setRadio(name, v) {
     const list = document.querySelectorAll(`input[name="${name}"]`);
@@ -259,12 +256,6 @@
       cb?.(b.dataset.v);
       render();
     });
-  }
-  function setChips(id, v) {
-    const box = $(id);
-    if (!box) return;
-    if (!box.querySelector(`[data-v="${v}"]`)) return; // 旧存档的值已下线则保留默认
-    box.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c.dataset.v === v));
   }
 
   // 城市输入即筛：打字过滤候选，点选/回车确认；输错则回退到上一个有效城市

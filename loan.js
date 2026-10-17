@@ -4,7 +4,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "loan-v2";
-  const YUAN = 10000;
+  const { YUAN, clamp, num, trim1, fmtW, fmtYuan, chipVal, setChips, bindScale, readScale } = window.Util;
 
   // 数值单位：万元（收入/支出/存款/贷款），显示时转元
   const PRESETS = {
@@ -33,7 +33,6 @@
   // 按岗位稳定性分档；整体结果量级对齐上市银行个人住房贷款不良率（2024年报约0.6%–1.1%）
   const SHOCK_BASE = { stable: 0.03, normal: 0.05, volatile: 0.10 };
 
-  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
   // 断供概率拆成三段：中断概率 × 占比放大 × 缓冲缺口系数。
   // 慢性占比不再当成独立的"年事件"逐年复利，避免把静态条件放大成耸动数字。
   const ratioMult = (ratio) => !Number.isFinite(ratio) ? 1 : ratio > 0.5 ? 2.5 : ratio > 0.35 ? 1.8 : ratio > 0.3 ? 1.3 : 1;
@@ -48,37 +47,6 @@
     if (!el) return;
     el.min = 0; el.max = 100; el.step = 1;
     el.value = Math.round(incomeToPos(wan));
-  }
-  const num = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
-  const trim1 = (v) => String(parseFloat(Number(v).toFixed(2))); // 两位小数，多余尾零自动去掉
-  const fmtW = (yuan) => {
-    const neg = yuan < 0 ? "-" : "";
-    const a = Math.abs(yuan) / YUAN;
-    return neg + (a >= 1000 ? a.toFixed(0) : a.toFixed(1)) + "万";
-  };
-  const fmtYuan = (v) => v >= 10000 ? (v / 10000).toFixed(2) + "万" : Math.round(v) + "元";
-  const chipVal = (id) => $(id)?.querySelector(".chip.active")?.dataset.v;
-  function setChips(id, v) {
-    const box = $(id);
-    if (!box) return;
-    if (!box.querySelector(`[data-v="${v}"]`)) return;
-    box.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c.dataset.v === v));
-  }
-
-  // 金额滑杆经分段刻度换算：value 属性存的是档位序号，不是万元
-  function bindScale(id, segs, val) {
-    const el = $(id);
-    if (!el) return;
-    if (window.SliderScale) window.SliderScale.bind(el, segs, val);
-    else { el.min = segs[0][0]; el.max = segs[segs.length - 1][1]; el.step = segs[0][2]; el.value = val; }
-  }
-  function readScale(id) {
-    const el = $(id);
-    return window.SliderScale ? window.SliderScale.read(el) : Number(el.value);
-  }
-  function writeScale(id, v) {
-    const el = $(id);
-    if (window.SliderScale) window.SliderScale.write(el, v); else el.value = v;
   }
 
   function getInputs() {

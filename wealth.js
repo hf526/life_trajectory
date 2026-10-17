@@ -4,18 +4,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "wealth-v1";
-  const YUAN = 10000; // 1万 = 10000元，内部统一用元
-
-  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-  const cleanNum = (v) => String(v ?? "").trim().replace(/[,，\s]/g, ""); // 千分位逗号/空格直接删掉，小数点保留
-  const num = (v, d) => { const n = parseFloat(cleanNum(v)); return Number.isFinite(n) ? n : d; };
-  const int = (v, d) => { const n = parseInt(cleanNum(v), 10); return Number.isFinite(n) ? n : d; };
-  const fmtW = (yuan) => {
-    const w = yuan / YUAN;
-    const neg = w < 0 ? "-" : "";
-    const a = Math.abs(w);
-    return neg + (a >= 1000 ? a.toFixed(0) : a.toFixed(1)) + "万";
-  };
+  const { YUAN, clamp, num, int, fmtW } = window.Util;
 
   function getInputs() {
     const ageNow = clamp(int($("wAgeNow").value, 30), 18, 80);
@@ -91,7 +80,7 @@
     $("wReal").textContent = fmtW(last.real);
     $("wContrib").textContent = fmtW(s.contribTotal);
     $("wGain").textContent = (gain >= 0 ? "+" : "−") + fmtW(Math.abs(gain)).replace("-", "");
-    $("wGain").style.color = gain >= 0 ? "#5eead4" : "#fda4af";
+    $("wGain").className = gain >= 0 ? "go" : "past";
     $("wealthChartWrap").innerHTML = chart(s.rows);
     // 里程碑
     const ms = milestones(s.rows);
@@ -165,24 +154,6 @@
       $("wAgeNow").value = 30; $("wAgeEnd").value = 60; $("wInit").value = 10;
       $("wMonthly").value = 3000; $("wGrowth").value = 0; $("wReturn").value = 2.5; $("wInflation").value = 3;
       render();
-    });
-    if ($("wealthBring")) $("wealthBring").addEventListener("click", () => {
-      try {
-        const f = JSON.parse(localStorage.getItem("fortune-v1") || "null");
-        if (f) {
-          const netW = Math.max(0, (f.cash || 0) + (f.invest || 0) + (f.house || 0) - (f.debt || 0));
-          if (f.age) $("wAgeNow").value = f.age;
-          $("wInit").value = Math.round(netW * 10) / 10;
-          // 定投初估：年结余/12
-          if (f.income !== undefined && f.expense !== undefined) {
-            const m = Math.max(0, Math.round((f.income - f.expense) * YUAN / 12));
-            if (m > 0) $("wMonthly").value = m;
-          }
-          render();
-          return;
-        }
-      } catch (e) {}
-      alert("还没算过人生财富，先去 Tab2 填一次现状再带入。");
     });
     render();
   }

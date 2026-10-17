@@ -5,12 +5,10 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "rentbuy-v1";
-  const YUAN = 10000;
+  const { YUAN, clamp, num, trim1, fmtW, fmtYuan, chipVal, setChips, bindScale, readScale, writeScale } = window.Util;
   const TAX_RATE = 0.03; // 交易税费：房价×3%一次性
   const HOLD_RATE = 0.01; // 持有成本：当年房价×1%/年
 
-  const clamp = (n, a, b) => Math.max(a, Math.min(b, n));
-  const num = (v, d) => { const n = parseFloat(v); return Number.isFinite(n) ? n : d; };
   // 金额滑杆走分段刻度（低端细、高端粗）：一套房大多 100–200 万，但也要能拉到 600 万以上
   const SCALES = {
     rLoanAmt: [[0, 50, 1], [50, 150, 5], [150, 300, 10], [300, 600, 20], [600, 1000, 50]],
@@ -18,38 +16,10 @@
     rRent: [[500, 3000, 100], [3000, 6000, 200], [6000, 12000, 500], [12000, 30000, 1000]],
   };
   const DEFAULTS = { loan: 105, down: 45, rent: 3000 };
-  function bindScale(id, segs, val) {
-    const el = $(id);
-    if (!el) return;
-    if (window.SliderScale) window.SliderScale.bind(el, segs, val);
-    else { el.min = segs[0][0]; el.max = segs[segs.length - 1][1]; el.step = segs[0][2]; el.value = val; }
-  }
-  function readScale(id) {
-    const el = $(id);
-    return window.SliderScale ? window.SliderScale.read(el) : Number(el.value);
-  }
-  function writeScale(id, v) {
-    const el = $(id);
-    if (window.SliderScale) window.SliderScale.write(el, v); else el.value = v;
-  }
   function applyDefaults() {
     writeScale("rLoanAmt", DEFAULTS.loan);
     writeScale("rDownPay", DEFAULTS.down);
     writeScale("rRent", DEFAULTS.rent);
-  }
-  const trim1 = (v) => String(parseFloat(Number(v).toFixed(2))); // 两位小数，多余尾零自动去掉
-  const fmtW = (yuan) => {
-    const neg = yuan < 0 ? "-" : "";
-    const a = Math.abs(yuan) / YUAN;
-    return neg + (a >= 1000 ? a.toFixed(0) : a.toFixed(1)) + "万";
-  };
-  const fmtYuan = (v) => v >= 10000 ? (v / 10000).toFixed(2) + "万" : Math.round(v) + "元";
-  const chipVal = (id) => $(id)?.querySelector(".chip.active")?.dataset.v;
-  function setChips(id, v) {
-    const box = $(id);
-    if (!box) return;
-    if (!box.querySelector(`[data-v="${v}"]`)) return;
-    box.querySelectorAll(".chip").forEach((c) => c.classList.toggle("active", c.dataset.v === v));
   }
 
   function getInputs() {
