@@ -6,7 +6,7 @@
  */
 (function () {
   const REDUCE = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-  const SEL = ".kpi b, .verdict b, .probs b, .vprob b, .stat b, .hero-num b, .hero-pct b, .hero-lg b";
+  const SEL = ".kpi b, .verdict b, .probs b, .vprob b, .hero-num b";
 
   // 把 "≈1,234.5万" 拆成 前缀 + 数字 + 后缀，记住小数位与千分位，回写时保持原格式
   function parts(s) {
@@ -55,6 +55,8 @@
     if (from === to) { el.__cur = to; el.textContent = text; el.__own = text; return; }
     const dur = animateFirst && el.__seen !== to ? 520 : 240;
     el.__seen = to;
+    // 先把终值落上去再排动画：后台标签里 rAF 不跑，数字不能一直停在占位符"–"
+    el.textContent = text; el.__own = text;
     const t0 = performance.now();
     const step = (now) => {
       const k = Math.min(1, (now - t0) / dur);

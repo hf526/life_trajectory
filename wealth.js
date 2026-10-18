@@ -43,7 +43,7 @@
     return targets.map((t) => {
       const hit = rows.find((r) => r.nominal >= t);
       return { t, age: hit ? hit.age : null };
-    }).filter((x) => x.age !== null || x.t <= rows[rows.length - 1].nominal * 1.5).slice(0, 3);
+    }).filter((x) => x.age !== null || x.t <= rows[rows.length - 1].nominal * 1.5); // 达到的都留；没达到的只留"差一点"的那档
   }
 
   function chart(rows) {

@@ -36,7 +36,9 @@
   // 断供概率拆成三段：中断概率 × 占比放大 × 缓冲缺口系数。
   // 慢性占比不再当成独立的"年事件"逐年复利，避免把静态条件放大成耸动数字。
   const ratioMult = (ratio) => !Number.isFinite(ratio) ? 1 : ratio > 0.5 ? 2.5 : ratio > 0.35 ? 1.8 : ratio > 0.3 ? 1.3 : 1;
-  const gapMult = (buffer) => !Number.isFinite(buffer) ? 0.1 : buffer >= 6 ? 0.1 : clamp(0.15 + ((6 - buffer) / 6) * 0.85, 0.15, 1);
+  // 缺口系数从"6 个月 = 10% 暴露"连续升到"0 个月 = 100%"：中间不能留台阶，
+  // 否则存款滑杆跨过 6 个月那一格时，概率会凭空跳掉三成。
+  const gapMult = (buffer) => !Number.isFinite(buffer) ? 0.1 : clamp(0.1 + 0.9 * (6 - buffer) / 6, 0.1, 1);
   // 税后月收入用对数刻度：低收入占更多格子（0.3万→0格，1.2万→40格，3万→66格，10万→100格）
   const INCOME_MIN = 0.3, INCOME_MAX = 10;
   const INCOME_SPAN = Math.log(INCOME_MAX / INCOME_MIN);
@@ -83,19 +85,23 @@
     const monthlyOut = pay + p.expense;
     const buffer = monthlyOut > 0 ? p.deposit / monthlyOut : Infinity;
     // 断供概率（示意估算，口径见脚注）：年中断概率 × 占比放大 × 缓冲缺口系数；5年/10年按年概率复利累加
-    const noIncomeWithLoan = !(p.income > 0) && p.loan > 0; // 无收入却背贷款：存款再厚也不能算稳健
-    const p1 = noIncomeWithLoan ? 0.20
+    const noIncomeWithLoan = !(p.income > 0) && p.loan > 0; // 无收入却背贷款
+    // 存款足以一次性结清剩余本金、结清后还能撑 6 个月生活费时，"还不起"并不成立
+    // （退休、全职照护家庭走这条），这时按缓冲口径算，别再一律判 20%/年 的危险。
+    const coversDebt = p.deposit >= p.loan + 6 * p.expense;
+    const hardNoIncome = noIncomeWithLoan && !coversDebt;
+    const p1 = hardNoIncome ? 0.20
       : clamp((SHOCK_BASE[p.job] ?? 0.07) * ratioMult(ratio) * gapMult(buffer), 0.001, 0.5);
     const p5 = 1 - Math.pow(1 - p1, 5);
     const p10 = 1 - Math.pow(1 - p1, 10);
-    const danger = noIncomeWithLoan || (p.income > 0 && ratio > 0.5) || buffer < 3;
+    const danger = hardNoIncome || (p.income > 0 && ratio > 0.5) || buffer < 3;
     const tight = (p.income > 0 && ratio > 0.35) || buffer < 6;
     const grade = danger ? "危险" : tight ? "紧张" : "稳健";
     const stress = [0.01, 0.02].map((d) => {
       const s = calcPay(p.loan, p.rate + d, p.years, p.type);
       return { d, pay: s.pay, ratio: p.income > 0 ? s.pay / p.income : NaN };
     });
-    return { pay, totalInterest, ratio, buffer, p1, p5, p10, grade, stress };
+    return { pay, totalInterest, ratio, buffer, p1, p5, p10, grade, stress, noIncomeWithLoan, coversDebt, hardNoIncome };
   }
 
   function render() {
@@ -116,15 +122,18 @@
     $("lProb5").textContent = fmtP(r.p5);
     $("lProb10").textContent = fmtP(r.p10);
     // 结论文案跟着"到底哪一项踩线"走，不再一律归因到缓冲
-    const noIncome = !(p.income > 0) && p.loan > 0;
+    const noIncome = r.hardNoIncome; // 无收入且存款结不清贷款
+    const cashOut = r.noIncomeWithLoan && r.coversDebt; // 无收入但存款够结清：是现金流安排问题，不是还不起
     const reasons = [];
     if (noIncome) reasons.push("无稳定税后收入");
+    else if (cashOut) reasons.push("无税后收入（存款足以结清贷款）");
     else if (r.ratio > 0.5) reasons.push(`月供占比 ${(r.ratio * 100).toFixed(0)}%（超50%红线）`);
     else if (r.ratio > 0.35) reasons.push(`月供占比 ${(r.ratio * 100).toFixed(0)}%（偏紧）`);
     else if (r.ratio > 0.3) reasons.push(`月供占比 ${(r.ratio * 100).toFixed(0)}%（略超30%线）`);
     if (r.buffer < 6) reasons.push(`缓冲仅 ${r.buffer.toFixed(1)} 个月`);
     const fixes = [];
     if (noIncome) fixes.push("先有稳定税后收入");
+    if (cashOut) fixes.push("要么一次性结清，要么按提前还款计划把这笔存款用起来");
     if (p.income > 0 && r.ratio > 0.35) fixes.push("降总额或拉长期限，把占比压回35%内");
     else if (p.income > 0 && r.ratio > 0.3) fixes.push("把占比压回30%以内");
     if (r.buffer < 6) fixes.push(`把存款补到约 ${fmtYuan((r.pay + p.expense) * 6)}（6个月缓冲）`);
@@ -151,13 +160,14 @@
 
     const adv = [];
     if (noIncome) adv.push(`当前无税后月收入：靠存款硬扛月供，先有稳定收入再签约。`);
+    else if (cashOut) adv.push(`无税后月收入，但存款 <b>${fmtW(p.deposit)}</b> 够结清这笔贷款：先定一次性还掉还是留着理财，别让利息一直跑。`);
     else if (p.income > 0 && r.ratio > 0.5) adv.push(`月供吃掉收入 <b>${(r.ratio * 100).toFixed(0)}%</b>：过了50%红线，降总额、拉长期限、多攒首付三选一。`);
     else if (p.income > 0 && r.ratio > 0.35) adv.push(`月供占比 <b>${(r.ratio * 100).toFixed(0)}%</b>：偏紧但可扛，别再新增大额分期。`);
     else if (p.income > 0 && r.ratio > 0.3) adv.push(`月供占比 <b>${(r.ratio * 100).toFixed(0)}%</b>：略超30%线，留点余地，别再加分期。`);
     else if (p.income > 0) adv.push(`月供占比 <b>${(r.ratio * 100).toFixed(0)}%</b>：30%线内，健康。`);
     if (r.buffer < 3) adv.push(`存款只撑 <b>${r.buffer.toFixed(1)}个月</b>：先存够6个月（月供+支出）约 <b>${fmtYuan((r.pay + p.expense) * 6)}</b> 再上车。`);
     else if (r.buffer < 6) adv.push(`缓冲 <b>${r.buffer.toFixed(1)}个月</b>：补到6个月就达标，单独存着别动。`);
-    else adv.push(`缓冲 <b>${r.buffer >= 20 ? "20+" : r.buffer.toFixed(1)}个月</b>：达标，继续保持。`);
+    else if (!cashOut) adv.push(`缓冲 <b>${r.buffer >= 20 ? "20+" : r.buffer.toFixed(1)}个月</b>：达标，继续保持。`);
     const worst = r.stress[1];
     if (worst.ratio > 0.5) adv.push(`利率+2%后月供占比 <b>${(worst.ratio * 100).toFixed(0)}%</b>：顶不住加息，现在的方案偏脆弱。`);
     if (!isHouse && (p.rate > 0.06 || p.years > 5)) adv.push(`车是贬值消费品：利率超6%或贷超5年都不划算，尽量缩短期限。`);

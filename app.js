@@ -272,14 +272,12 @@
   }
   $("#btnShare").addEventListener("click", async () => {
     const btn = $("#btnShare");
-    const tabNames = { windows: "人生窗口图谱", partner: "错过还有下一个吗", wealth: "复利要怎么攒", loan: "月供扛得住吗", rentbuy: "买还是租更值" };
-    let hk = "";
-    try { hk = (location.hash || "").replace(/^#\/?/, "").split("?")[0]; } catch (e) {}
-    if (hk === "levels" || hk === "fortune") hk = "partner";
-    const onWindows = hk === "" || hk === "windows";
+    const hk = window.Tabs ? window.Tabs.currentKey() : "windows"; // 路由表只在 tabs.js 一份
+    const label = document.querySelector(`.tab[data-tab="${hk}"]`)?.textContent.trim(); // 文案直接取导航按钮上的字
+    const onWindows = hk === "windows";
     const shareData = {
       title: document.title,
-      text: onWindows ? `人生窗口图谱：${state.age}岁 · ${state.gender === "female" ? "女性" : "男性"}` : (tabNames[hk] || "人生工具箱"),
+      text: onWindows ? `人生窗口图谱：${state.age}岁 · ${state.gender === "female" ? "女性" : "男性"}` : (label || "人生工具箱"),
       url: location.href,
     };
     const done = (msg) => {

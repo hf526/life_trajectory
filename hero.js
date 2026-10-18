@@ -85,8 +85,8 @@
       : `${total} 个窗口里，<b class="go">${open}</b> 个正在进行，一个都还没错过。`;
     let tail = "";
     if (closed) tail = `其中 <b class="dead">${closed}</b> 个已补不回来，只剩止损`;
-    else if (narrowing && upcoming) tail = `另有 <b class="tight">${narrowing}</b> 个只剩不到 3 年，<b>${upcoming}</b> 个未到年纪`;
-    else if (narrowing) tail = `另有 <b class="tight">${narrowing}</b> 个只剩不到 3 年，正在关门`;
+    else if (narrowing && upcoming) tail = `另有 <b class="tight">${narrowing}</b> 个正在关门，<b>${upcoming}</b> 个未到年纪`;
+    else if (narrowing) tail = `另有 <b class="tight">${narrowing}</b> 个已经走到窗口后段，正在关门`;
     else if (upcoming) tail = `还有 <b>${upcoming}</b> 个未到年纪`;
     else if (missed) tail = `错过的都能补，代价不同而已`;
     kicker.innerHTML = `<span class="hk-main">${main}</span>` + (tail ? `<small>${tail}。</small>` : "");

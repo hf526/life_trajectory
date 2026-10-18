@@ -89,6 +89,8 @@
     window.scrollTo({ top: 0 });
   }
 
+  window.Tabs = { currentKey }; // 给分享文案等外部使用者读当前 tab，避免各自再存一份路由表
+
   document.querySelector(".tabs").addEventListener("click", (e) => {
     const b = e.target.closest(".tab");
     if (b) switchTab(b.dataset.tab);

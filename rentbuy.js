@@ -6,7 +6,8 @@
   const $ = (id) => document.getElementById(id);
   const LS_KEY = "rentbuy-v1";
   const { YUAN, clamp, num, trim1, fmtW, fmtYuan, chipVal, setChips, bindScale, readScale, writeScale } = window.Util;
-  const TAX_RATE = 0.03; // 交易税费：房价×3%一次性
+  const TAX_RATE = 0.03; // 交易税费：房价×3%一次性（买入）
+  const SELL_RATE = 0.02; // 卖出摩擦：中介约1% + 增值税/个税约1%，净财富要按能变现的钱算
   const HOLD_RATE = 0.01; // 持有成本：当年房价×1%/年
 
   // 金额滑杆走分段刻度（低端细、高端粗）：一套房大多 100–200 万，但也要能拉到 600 万以上
@@ -58,7 +59,9 @@
     const gr = Math.pow(1 + p.rentG, 1 / 12) - 1;
     const ro = Math.pow(1 + p.opp, 1 / 12) - 1;
     let home = p.price, bal = L, invest = D + T, rent = p.rent;
-    const rows = [{ y: 0, buy: home - bal, rent: invest }];
+    // 买方净财富按"卖得掉拿到手的钱"算：房子不是流动资产，中介+增值税/个税不扣就是虚高
+    const buyNet = () => home - bal - home * SELL_RATE;
+    const rows = [{ y: 0, buy: buyNet(), rent: invest }];
     let even = null;
     for (let m = 1; m <= 360; m++) {
       home *= 1 + gh;
@@ -74,7 +77,7 @@
       invest = invest * (1 + ro) + (pmt + hold - rent);
       if (m % 12 === 0) {
         const y = m / 12;
-        const buy = home - bal;
+        const buy = buyNet();
         rows.push({ y, buy, rent: invest });
         if (even === null && y >= 1 && buy >= invest) even = y;
       }
@@ -163,7 +166,6 @@
       if (!raw) return false;
       const q = JSON.parse(raw);
       if (q.loanAmt !== undefined) writeScale("rLoanAmt", q.loanAmt);
-      else if (q.price !== undefined) writeScale("rLoanAmt", Math.round(q.price * (1 - (q.downPct ?? 0.3))));
       if (q.downPay !== undefined) writeScale("rDownPay", q.downPay);
       if (q.rate !== undefined) $("rRate").value = q.rate * 100;
       if (q.years) setChips("buyYears", String(q.years));

@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>人生工具箱：房贷月供计算器、复利定投计算器、买房租房对比</title>
-<meta name="description" content="5 个免费在线测算工具：房贷月供计算器（月供占比、断供缓冲、利率压力测试）、复利定投计算器（含通胀后的实际购买力）、买房还是租房更值、伴侣条件筛选人数估算，以及把人生按月摊成格子的人生窗口图谱（女性按 85 年、男性按 80 年计）。全部本地计算，数据不上传。" />
+<meta name="description" content="5 个免费在线测算工具：房贷月供计算器（月供占比、断供缓冲、利率压力测试）、复利定投计算器（含通胀后实际购买力）、买房还是租房更值、伴侣条件筛选、人生窗口图谱。本地计算，数据不上传。" />
 <link rel="canonical" href="https://life.lefng.top/" />
 <meta name="robots" content="index,follow,max-image-preview:large" />
 <meta name="theme-color" content="#141b2d" />
@@ -19,10 +19,13 @@
 <meta property="og:image" content="https://life.lefng.top/og.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:alt" content="人生工具箱分享卡：房贷月供、复利定投、买房租房、人生窗口四个词，右下为按月摊开的生命格子示意图" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="人生工具箱 · 月供、复利、买房租房，一次算清" />
 <meta name="twitter:description" content="月供扛不扛得住？定投 30 年能攒多少？买房还是租房更值？一辈子（女性 85 年、男性 80 年）已经用掉多少？" />
 <meta name="twitter:image" content="https://life.lefng.top/og.png" />
+<meta name="twitter:image:alt" content="人生工具箱分享卡：四个测算主题与按月摊开的生命格子" />
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23141b2d'/%3E%3Cg fill='%23c9a45c'%3E%3Crect x='6' y='6' width='5' height='5'/%3E%3Crect x='13.5' y='6' width='5' height='5'/%3E%3Crect x='21' y='6' width='5' height='5'/%3E%3Crect x='6' y='13.5' width='5' height='5'/%3E%3Crect x='13.5' y='13.5' width='5' height='5' opacity='.45'/%3E%3Crect x='21' y='13.5' width='5' height='5' opacity='.45'/%3E%3Crect x='6' y='21' width='5' height='5' opacity='.45'/%3E%3Crect x='13.5' y='21' width='5' height='5' opacity='.45'/%3E%3Crect x='21' y='21' width='5' height='5' opacity='.45'/%3E%3C/g%3E%3C/svg%3E" />
 <link rel="stylesheet" href="./styles.css" />
@@ -63,7 +66,7 @@
         {
           "@type": "Question",
           "name": "每月定投 3000 元，30 年后能攒多少钱？",
-          "acceptedAnswer": { "@type": "Answer", "text": "取决于年化收益率和通胀两个变量。月供算法按月复利，收益率每差 2 到 3 个百分点，三十年后的差距通常是本金量级的差别。工具里调「初始本金、每月定投、年化收益」三个数就能看到名义终值和扣掉通胀后的实际购买力。" }
+          "acceptedAnswer": { "@type": "Answer", "text": "取决于年化收益率和通胀两个变量。算法按月复利，收益率每差 2 到 3 个百分点，三十年后的差距通常是本金量级的差别。调「初始本金、每月定投、年化收益」三个数就能看到名义终值和扣掉通胀后的实际购买力。" }
         },
         {
           "@type": "Question",
@@ -82,6 +85,7 @@
 </script>
 </head>
 <body>
+<noscript><p class="lede" style="padding:16px 24px">本页五个工具都在浏览器本地算，需要启用 JavaScript 才出结果。</p></noscript>
 <header class="bar">
   <div class="wrap bar-in">
     <div class="brand"><span class="mark">LEDGER</span><strong>人生工具箱</strong><em id="curTabName">窗口图谱</em></div>
@@ -200,7 +204,7 @@
         </div>
       </div>
       <div class="panel">
-        <h2>相遇</h2>
+        <h2>社交量与相遇频率</h2>
         <div class="prow"><label>社交量 <b id="vSocial">2</b> 人/月 <small>每月认识的新单身异性</small></label><input id="pSocial" type="range" min="1" max="30" step="1" value="2" /></div>
       </div>
       </div>
@@ -220,7 +224,7 @@
       </form>
     </div>
     <footer class="foot"><details><summary>口径说明（点开）</summary>
-      <p>费米估算非普查：城市基数=常住人口(2024)×18–50岁占比×单身率，占比按七普年龄结构分档（深圳15–59岁占79.5%、东莞81.4%、北京68.5%），单身率=未婚+离异/丧偶估算、分线级（2024年25–29岁未婚率54.7%、30–34岁约20.7%，七普25岁73.0%）。取一半为目标性别，年龄按分年龄单身曲线加权（24–32岁约占全部18–50岁单身者的39%，并非均匀分布），再 × 身高正态占比 × 颜值正态占比（1–10分，均值6±1.5，主观刻度）× 学历/收入/资产占比（线级系数修正）。学历基线：大专+35%/本科+18%/硕士+4%（七普15岁+大学文化18.8%）；收入基线锚定个税申报数据（正式就业申报人中约三成缴个税≈年入10万+、年入百万+约占1%）：10万+20%/18万+7%/50万+1.5%/100万+0.5%；资产基线参照央行《2019年城镇居民家庭资产负债调查》折减：50万+18%/200万+5%/500万+1.2%。身高按男均170±6cm、女均158±5.5cm（2020国民体质监测口径）。概率按泊松：1年再遇=1-e^(-λ)，λ=月社交×12×占比。条件是筛子不是尺子，仅做取舍提示。</p>
+      <p>费米估算非普查：城市基数=常住人口(2024)×18–50岁占比×单身率，占比按七普年龄结构分档（深圳15–59岁占79.5%、东莞81.4%、北京68.5%），单身率=未婚+离异/丧偶估算、分线级（年鉴逐岁未婚率：25岁70.8%、28岁43%、29岁34%、30岁27.7%，30–34岁段均值约20.7%）。取一半为目标性别，年龄按分年龄单身曲线加权（24–32岁约占全部18–50岁单身者的36%，并非均匀分布；该曲线取年鉴逐岁未婚率加离异/丧偶补量，28–30岁为急转弯段），再 × 身高正态占比 × 颜值正态占比（1–10分，均值6±1.5，主观刻度）× 学历/收入/资产占比（线级系数修正）。学历基线：大专+35%/本科+18%/硕士+4%（七普15岁+大学文化18.8%）；收入基线锚定个税申报数据（正式就业申报人中约三成缴个税≈年入10万+、年入百万+约占1%）：10万+20%/18万+7%/50万+1.5%/100万+0.5%；资产基线参照央行《2019年城镇居民家庭资产负债调查》折减：50万+18%/200万+5%/500万+1.2%。身高按男均170±6cm、女均158±5.5cm（2020国民体质监测口径）。概率按泊松：1年再遇=1-e^(-λ)，λ=月社交×12×占比。条件是筛子不是尺子，仅做取舍提示。</p>
     </details></footer>
   </section>
 
@@ -230,7 +234,7 @@
     <p class="intro-sub">复利定投计算器：填当前年龄、目标年龄、初始本金、每月定投和年化收益，按实际月利率复利（月利率 =（1+年化）^(1/12)−1），每月定投还能按年上调。结果给出名义终值、累计投入、总收益，以及扣掉通胀之后的实际购买力。</p>
     <div class="calc">
       <form id="wealthForm" class="panel" autocomplete="off">
-        <h2>输入假设</h2>
+        <h2>复利定投 · 输入假设</h2>
         <div class="frow"><label for="wAgeNow">当前年龄</label><div class="fin"><input id="wAgeNow" type="text" inputmode="numeric" value="30" /><span>岁</span></div></div>
         <div class="frow"><label for="wAgeEnd">目标年龄</label><div class="fin"><input id="wAgeEnd" type="text" inputmode="numeric" value="60" /><span>岁</span></div></div>
         <div class="frow"><label for="wInit">初始本金</label><div class="fin"><input id="wInit" type="text" inputmode="decimal" value="10" /><span>万</span></div></div>
@@ -270,13 +274,14 @@
     <p class="intro-sub">房贷月供计算器：支持等额本息与等额本金两种还款方式，算出月供金额、月供占税后收入的比重、现有存款能撑几个月不断供，并对利率上浮做压力测试。一般月供占比 30% 以内算稳健，超过 50% 是红线。</p>
     <div class="calc">
       <form id="loanForm" class="panel" autocomplete="off">
-        <h2>输入假设 <button id="loanExample" class="linkbtn" type="button">填示例</button></h2>
+        <h2>房贷月供 · 输入假设 <button id="loanExample" class="linkbtn" type="button">填示例</button></h2>
         <div class="prow"><label>贷款用途</label><div class="chips" id="loanMode">
           <button class="chip active" data-v="house" type="button">买房</button><button class="chip" data-v="car" type="button">买车</button>
         </div></div>
         <div class="prow"><label>还款方式</label><div class="chips" id="loanType">
           <button class="chip active" data-v="annuity" type="button">等额本息</button><button class="chip" data-v="principal" type="button">等额本金</button>
         </div></div>
+        <!-- 金额类滑杆的 min/max/step/value 存的是"档位序号"，由 scale.js 按分段刻度在初始化时覆写，不是万元 -->
         <div class="prow"><label>贷款金额 <b id="vLoan">100</b> 万</label><input id="fLoan" type="range" min="20" max="500" step="5" value="100" /></div>
         <div class="prow"><label>年利率 <b id="vRate">3.3</b> %</label><input id="fRate" type="range" min="1" max="8" step="0.1" value="3.3" /></div>
         <div class="prow"><label>贷款年限</label><div class="chips" id="loanYears"></div></div>
@@ -302,7 +307,7 @@
       </div>
     </div>
     <footer class="foot"><details><summary>口径说明（点开）</summary>
-      <p>等额本息月供=P·r·(1+r)^n/((1+r)^n−1)，等额本金首月=P/n+P·r（占比与缓冲按首月算，最保守）。月供占比=月供/税后月收入（30%内稳健、50%为红线）；断供缓冲=存款资金/(月供+其他月支出)（6个月及格、3个月危险）。断供概率=年收入中断概率（稳定3%/一般5%/波动大10%，锚定城镇调查失业率：2025年城镇30–59岁均值4.0%、整体5.2%）× 占比放大（占比&gt;50%×2.5、&gt;35%×1.8、&gt;30%×1.3，否则×1）× 缓冲缺口系数（缓冲≥6个月按10%暴露，不足6个月从15%线性升到100%），5年/10年按年概率复利累加（1-(1-p)^n）；无收入背贷款按20%/年示意。整体量级对齐上市银行个人住房贷款不良率（2024年报约0.6%–1.1%）。为量级估算非精算。利率压力测试按同方式重算。未含税费、维修、贬值。非信贷建议。</p>
+      <p>等额本息月供=P·r·(1+r)^n/((1+r)^n−1)，等额本金首月=P/n+P·r（占比与缓冲按首月算，最保守）。月供占比=月供/税后月收入（30%内稳健、50%为红线）；断供缓冲=存款资金/(月供+其他月支出)（6个月及格、3个月危险）。断供概率=年收入中断概率（稳定3%/一般5%/波动大10%，锚定城镇调查失业率：2025年城镇30–59岁均值4.0%、整体5.2%）× 占比放大（占比&gt;50%×2.5、&gt;35%×1.8、&gt;30%×1.3，否则×1）× 缓冲缺口系数（缓冲≥6个月只留10%暴露，6个月以内从10%线性升到100%，不设台阶），5年/10年按年概率复利累加（1-(1-p)^n）；无收入且存款不足以结清贷款按20%/年示意，存款已能结清则改按缓冲口径计算（一次性还清还是留着理财是另一个问题）。整体量级对齐上市银行个人住房贷款不良率（2024年报约0.6%–1.1%）。为量级估算非精算。利率压力测试按同方式重算。未含税费、维修、贬值。非信贷建议。</p>
     </details></footer>
   </section>
 
@@ -312,7 +317,8 @@
     <p class="intro-sub">买房还是租房：把两条路放在同一个起点上，双方开局都出首付和交易税费。买方每月还贷并承担持有成本，期末拿到房值减剩余贷款；租方把首付拿去理财，每月把月供差额继续按同样收益定投。比较持有 N 年后的净财富，并给出打平年限。</p>
     <div class="calc">
       <form id="rentbuyForm" class="panel" autocomplete="off">
-        <h2>输入假设 <button id="rbReset" class="linkbtn" type="button">重置</button></h2>
+        <h2>买房租房 · 输入假设 <button id="rbReset" class="linkbtn" type="button">重置</button></h2>
+        <!-- 同上：金额滑杆的 range 属性是档位序号，由 scale.js 覆写 -->
         <div class="prow"><label>贷款金额 <b id="vLoanAmt">105</b> 万</label><input id="rLoanAmt" type="range" min="0" max="123" step="1" value="55" /></div>
         <div class="prow"><label>首付金额 <b id="vDownPay">45</b> 万</label><input id="rDownPay" type="range" min="0" max="104" step="1" value="45" /></div>
         <div class="prow"><label>房贷年利率 <b id="vRateR">3.3</b> %</label><input id="rRate" type="range" min="1" max="8" step="0.1" value="3.3" /></div>
@@ -339,7 +345,7 @@
       </div>
     </div>
     <footer class="foot"><details><summary>口径说明（点开）</summary>
-      <p>同起点：双方开局都有首付+交易税费（房价×3%一次性；房价=贷款金额+首付金额）。买方每月还月供+持有成本（房价×1%/12），期末拥有房值−剩余贷款；租方首付理财（机会成本复利），每月把（月供+持有−租金）差额继续定投（租金贵过月供时从本金扣）。房价与租金涨幅可调，不确定就按0估。打平年限=买方净财富首次≥租方的年份（看30年）。未含搬家成本与个人偏好。非投资建议。</p>
+      <p>同起点：双方开局都有首付+交易税费（房价×3%一次性；房价=贷款金额+首付金额）。买方每月还月供+持有成本（房价×1%/12），期末净财富=房值−剩余贷款−卖出摩擦（房值×2%：中介约1%+增值税/个税约1%；房子不是流动资产，不扣这一笔就高估了到手钱）；租方首付理财（机会成本复利），每月把（月供+持有−租金）差额继续定投（租金贵过月供时从本金扣）。房价与租金涨幅可调，不确定就按0估。打平年限=买方净财富首次≥租方的年份（看30年）。未计装修、搬家成本与租方押金/中介费，也未含个人偏好。非投资建议。</p>
     </details></footer>
   </section>
 
@@ -376,16 +382,17 @@
   </div>
 </div>
 
-<script src="./util.js"></script>
-<script src="./data.js"></script>
-<script src="./scale.js"></script>
-<script src="./motion.js"></script>
-<script src="./hero.js"></script>
-<script src="./app.js"></script>
-<script src="./partner.js"></script>
-<script src="./wealth.js"></script>
-<script src="./loan.js"></script>
-<script src="./rentbuy.js"></script>
-<script src="./tabs.js"></script>
+<!-- defer：按顺序在文档解析完后执行，避免 11 个脚本阻塞首屏渲染 -->
+<script src="./util.js" defer></script>
+<script src="./data.js" defer></script>
+<script src="./scale.js" defer></script>
+<script src="./motion.js" defer></script>
+<script src="./hero.js" defer></script>
+<script src="./app.js" defer></script>
+<script src="./partner.js" defer></script>
+<script src="./wealth.js" defer></script>
+<script src="./loan.js" defer></script>
+<script src="./rentbuy.js" defer></script>
+<script src="./tabs.js" defer></script>
 </body>
 </html>
