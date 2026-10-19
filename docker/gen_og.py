@@ -41,9 +41,9 @@ d = ImageDraw.Draw(img)
 d.rectangle([0, 0, W, 6], fill=BRASS)
 
 # 品牌小字 + 主标题
-d.text((72, 62), "L E D G E R", font=font("msyh.ttc", 20), fill=BRASS)
-d.text((72, 108), "人生工具箱", font=font("msyhbd.ttc", 82), fill=INK)
-d.text((74, 224), "房贷月供 · 复利定投 · 买房租房 · 人生窗口",
+d.text((72, 62), "L E F N G · 乐风555", font=font("msyh.ttc", 20), fill=BRASS)
+d.text((72, 108), "人生窗口图谱", font=font("msyhbd.ttc", 82), fill=INK)
+d.text((74, 224), "房贷月供 · 复利定投 · 买房租房 · 伴侣筛选",
        font=font("msyh.ttc", 34), fill=INK)
 d.text((74, 286), "五个测算工具，一次算清。纯本地计算，数据不上传。",
        font=font("msyh.ttc", 24), fill=DIM)

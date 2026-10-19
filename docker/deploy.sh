@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# 人生工具箱（life_trajectory）部署脚本（Ubuntu，纯静态站）
+# 乐风555 · 人生窗口图谱（life_trajectory）部署脚本（Ubuntu，纯静态站）
 #
 # 统一约定（详见 web-svcs-deploy 技能）：
 #   · 项目代码落在服务器 /home/docker_svc/life_trajectory

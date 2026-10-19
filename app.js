@@ -277,7 +277,7 @@
     const onWindows = hk === "windows";
     const shareData = {
       title: document.title,
-      text: onWindows ? `人生窗口图谱：${state.age}岁 · ${state.gender === "female" ? "女性" : "男性"}` : (label || "人生工具箱"),
+      text: onWindows ? `人生窗口图谱：${state.age}岁 · ${state.gender === "female" ? "女性" : "男性"}` : (label || "乐风555"),
       url: location.href,
     };
     const done = (msg) => {

@@ -7,27 +7,27 @@
     windows: {
       view: "view-windows", tab: "tab-windows", name: "窗口图谱",
       h1: "人生窗口图谱：女性 85 年、男性 80 年，把一辈子摊成格子",
-      docTitle: "人生工具箱：房贷月供计算器、复利定投计算器、买房租房对比",
+      docTitle: "乐风555-人生窗口图谱",
     },
     partner: {
       view: "view-partner", tab: "tab-partner", name: "伴侣去留",
       h1: "伴侣筛选计算器：你的条件组合还剩多少人",
-      docTitle: "错过还有下一个吗 · 伴侣条件筛选计算器 | 人生工具箱",
+      docTitle: "错过还有下一个吗 · 伴侣条件筛选计算器 | 乐风555",
     },
     wealth: {
       view: "view-wealth", tab: "tab-wealth", name: "复利攒钱",
       h1: "复利定投计算器：每月存 3000，30 年后是多少钱",
-      docTitle: "复利定投计算器 · 每月定投 30 年能攒多少 | 人生工具箱",
+      docTitle: "复利定投计算器 · 每月定投 30 年能攒多少 | 乐风555",
     },
     loan: {
       view: "view-loan", tab: "tab-loan", name: "月供压力",
       h1: "房贷月供计算器：算清月供、收入占比与断供缓冲",
-      docTitle: "房贷月供计算器 · 月供占比与断供缓冲 | 人生工具箱",
+      docTitle: "房贷月供计算器 · 月供占比与断供缓冲 | 乐风555",
     },
     rentbuy: {
       view: "view-rentbuy", tab: "tab-rentbuy", name: "买租哪个值",
       h1: "买房还是租房更值：两套账本同起点对比 N 年",
-      docTitle: "买房还是租房更值 · 同起点净财富对比 | 人生工具箱",
+      docTitle: "买房还是租房更值 · 同起点净财富对比 | 乐风555",
     },
   };
   const ALIAS = { levels: "partner", fortune: "partner" }; // 旧 Tab2 链接兼容
